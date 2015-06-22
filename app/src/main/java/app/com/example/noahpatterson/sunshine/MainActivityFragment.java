@@ -1,14 +1,21 @@
 package app.com.example.noahpatterson.sunshine;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,9 +36,18 @@ import java.util.Date;
  */
 public class MainActivityFragment extends Fragment {
 
-    private ArrayList<String> data;
+    private ArrayList<String> data = new ArrayList<String>();
 
     public MainActivityFragment() {
+    }
+
+
+    public void getWeatherData() {
+        // call background task
+        TextView textView = (TextView) getActivity().findViewById(R.id.editText_zip_code);
+        String zip = textView.getText().toString();
+        int zip_code = Integer.parseInt(zip);
+        new GetWeatherData().execute(zip_code);
     }
 
     @Override
@@ -47,8 +63,7 @@ public class MainActivityFragment extends Fragment {
 //                "Saturday - Cloudy - 75/64",
 //                "Sunday - Cloudy - 75/64"
 //        };
-        // call background task
-        new GetWeatherData().execute(20011);
+
 
 //        List<String> weekForecast= new ArrayList<String>(Arrays.asList(data));
         //R.layout refers to the actual xml file. R.id refers to the id of an element
@@ -61,12 +76,38 @@ public class MainActivityFragment extends Fragment {
         forecast_list_vew.setAdapter(forecastArrayAdapter);
 
 
+        final EditText edit_txt = (EditText) fragmentView.findViewById(R.id.editText_zip_code);
+        final Button getWeatherDataButton = (Button) fragmentView.findViewById(R.id.set_zip_code_button);
 
+        getWeatherDataButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                // do something
+                getWeatherData();
+            }
+        });
+
+
+        edit_txt.setOnEditorActionListener(new EditText.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(),
+                            0);
+                    getWeatherDataButton.performClick();
+                    return true;
+                }
+                return false;
+            }
+        });
 
 
         return fragmentView;
     }
-                                                // Params, Progress, Result
+                                        // Params, Progress, Result
     private class GetWeatherData extends AsyncTask<Integer, Void, String> {
         protected String doInBackground(Integer... zip_code) {
             // These two need to be declared outside the try/catch
@@ -78,6 +119,7 @@ public class MainActivityFragment extends Fragment {
             String forecastJsonStr = null;
 
             try {
+                Log.d("GetWeatherData", "doInBackground ");
                 // Construct the URL for the OpenWeatherMap query
                 // Possible parameters are avaiable at OWM's forecast API page, at
                 // http://openweathermap.org/API#forecast
@@ -96,6 +138,7 @@ public class MainActivityFragment extends Fragment {
                     // Nothing to do.
                     return null;
                 }
+                Log.d("GetWeatherData", "stream not null ");
                 reader = new BufferedReader(new InputStreamReader(inputStream));
 
                 String line;
@@ -139,6 +182,7 @@ public class MainActivityFragment extends Fragment {
 
         protected void onPostExecute(String jsonWeatherData) {
             try {
+                Log.d("GetWeatherData", "postExecute");
                 parseJSONWeatherData(jsonWeatherData);
             } catch (JSONException e) {
                 System.err.println("Caught JSONException: " + e.getMessage());
@@ -146,10 +190,19 @@ public class MainActivityFragment extends Fragment {
         }
     }
 
+    private Double toFahrenheit(double celsiusTemp) {
+        return celsiusTemp * 1.8 + 32;
+    }
+
     private void parseJSONWeatherData(String jsonWeatherString) throws JSONException {
         JSONObject jsonObj = new JSONObject(jsonWeatherString);
         JSONArray dailyArray = jsonObj.getJSONArray("list");
         final int dailyArrayLength = dailyArray.length();
+
+        //find adapter
+        ListView forecast_list_vew = (ListView) getActivity().findViewById(R.id.listview_forecast);
+        ArrayAdapter<String> adapter = (ArrayAdapter<String>) forecast_list_vew.getAdapter();
+        data.clear();
         for (int i = 0;i < dailyArrayLength; i++) {
             JSONObject day = dailyArray.getJSONObject(i);
 
@@ -172,8 +225,8 @@ public class MainActivityFragment extends Fragment {
 
             //get temps
             JSONObject temps = day.getJSONObject("temp");
-            Double maxTemp = temps.getDouble("max");
-            Double minTemp = temps.getDouble("min");
+            Long maxTemp = Math.round(toFahrenheit(temps.getDouble("max")));
+            Long minTemp = Math.round(toFahrenheit(temps.getDouble("min")));
 
             //get weather type
             JSONArray weatherArray = day.getJSONArray("weather");
@@ -181,7 +234,9 @@ public class MainActivityFragment extends Fragment {
             String dayWeatherType = dayWeather.getString("main");
 
             String forecast = dayString + " - " + dayWeatherType + " - " + maxTemp + "/" + minTemp;
+
             data.add(forecast);
+            adapter.notifyDataSetChanged();
         }
     }
 }
