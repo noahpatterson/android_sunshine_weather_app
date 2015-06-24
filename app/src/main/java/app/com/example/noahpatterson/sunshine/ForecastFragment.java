@@ -11,8 +11,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -65,6 +67,7 @@ public class ForecastFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        //set starting data array to null
         String[] data = {
 
         };
@@ -76,10 +79,16 @@ public class ForecastFragment extends Fragment {
         // this finds the root view
         View fragmentView = inflater.inflate(R.layout.fragment_main, container, false);
 
-        ListView forecast_list_vew = (ListView) fragmentView.findViewById(R.id.listview_forecast);
+        final ListView forecast_list_vew = (ListView) fragmentView.findViewById(R.id.listview_forecast);
         forecast_list_vew.setAdapter(forecastAdapter);
 
-
+        forecast_list_vew.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                CharSequence weatherInfoOfClicked = (CharSequence) forecast_list_vew.getItemAtPosition(position);
+                Toast.makeText(forecast_list_vew.getContext(), weatherInfoOfClicked, Toast.LENGTH_SHORT).show();
+            }
+        });
 
         return fragmentView;
     }
@@ -161,22 +170,18 @@ public class ForecastFragment extends Fragment {
             }
             try {
                 return getWeatherDataFromJson(forecastJsonStr,numDays);
-            } catch (JSONException e) {
-
-            }
+            } catch (JSONException e) {}
             return null;
         }
 
         @Override
         protected void onPostExecute(String[] weatherData) {
-//            ListView forecastList = (ListView) getActivity().findViewById(R.id.listview_forecast);
-            forecastAdapter.clear();
-            for (String day : weatherData) {
-                forecastAdapter.add(day);
+            if (weatherData != null) {
+                forecastAdapter.clear();
+                for (String day : weatherData) {
+                    forecastAdapter.add(day);
+                }
             }
-//            forecastList.setAdapter(forecastAdapter);
-
-//            super.onPostExecute(weatherData);
         }
     }
 
@@ -263,7 +268,4 @@ public class ForecastFragment extends Fragment {
         return resultStrs;
 
     }
-
-
-
 }
