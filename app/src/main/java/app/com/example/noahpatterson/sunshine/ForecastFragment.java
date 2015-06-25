@@ -1,5 +1,6 @@
 package app.com.example.noahpatterson.sunshine;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -77,7 +78,7 @@ public class ForecastFragment extends Fragment {
         forecastAdapter = new ArrayAdapter<String>(getActivity(), R.layout.list_item_forecast, R.id.list_item_forecast_text_view, weekForecast);
 
         // this finds the root view
-        View fragmentView = inflater.inflate(R.layout.fragment_main, container, false);
+        final View fragmentView = inflater.inflate(R.layout.fragment_main, container, false);
 
         final ListView forecast_list_vew = (ListView) fragmentView.findViewById(R.id.listview_forecast);
         forecast_list_vew.setAdapter(forecastAdapter);
@@ -86,7 +87,10 @@ public class ForecastFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 CharSequence weatherInfoOfClicked = (CharSequence) forecast_list_vew.getItemAtPosition(position);
-                Toast.makeText(forecast_list_vew.getContext(), weatherInfoOfClicked, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(forecast_list_vew.getContext(), weatherInfoOfClicked, Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getActivity(), DetailActivity.class);
+                intent.putExtra(Intent.EXTRA_TEXT, weatherInfoOfClicked);
+                startActivity(intent);
             }
         });
 
