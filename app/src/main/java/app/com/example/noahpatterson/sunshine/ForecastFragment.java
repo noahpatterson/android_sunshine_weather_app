@@ -30,8 +30,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * A placeholder fragment containing a simple view. A modular container
@@ -59,26 +57,40 @@ public class ForecastFragment extends Fragment {
         int id = item.getItemId();
 
         if (id == R.id.action_refresh) {
-            SharedPreferences shardPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-            String location = shardPrefs.getString(getString(R.string.location), getString(R.string.default_location_value));
-            new FetchWeatherTask().execute(location);
+            updateWeather();
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void updateWeather() {
+        SharedPreferences shardPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String location = shardPrefs.getString(getString(R.string.location), getString(R.string.default_location_value));
+        new FetchWeatherTask().execute(location);
+    }
+
+    private long changeTemperatureUnits(long temp) {
+        SharedPreferences shardPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String unit = shardPrefs.getString(getString(R.string.temperature_units), getString(R.string.default_temp_value));
+        if (unit.equals("imperial")) {
+            return (temp * 9/5) + 32;
+        }
+        return temp;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        updateWeather();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        //set starting data array to null
-        String[] data = {
 
-        };
-
-        List<String> weekForecast= new ArrayList<String>(Arrays.asList(data));
         //R.layout refers to the actual xml file. R.id refers to the id of an element
-        forecastAdapter = new ArrayAdapter<String>(getActivity(), R.layout.list_item_forecast, R.id.list_item_forecast_text_view, weekForecast);
+        forecastAdapter = new ArrayAdapter<String>(getActivity(), R.layout.list_item_forecast, R.id.list_item_forecast_text_view, new ArrayList<String>());
 
         // this finds the root view
         final View fragmentView = inflater.inflate(R.layout.fragment_main, container, false);
@@ -192,6 +204,8 @@ public class ForecastFragment extends Fragment {
         }
     }
 
+
+
     /* The date/time conversion code is going to be moved outside the asynctask later,
  * so for convenience we're breaking it out into its own method now.
  */
@@ -210,8 +224,9 @@ public class ForecastFragment extends Fragment {
         long roundedHigh = Math.round(high);
         long roundedLow = Math.round(low);
 
-        String highLowStr = roundedHigh + "/" + roundedLow;
-        return highLowStr;
+        long convertedHigh = changeTemperatureUnits(roundedHigh);
+        long convertedLow  = changeTemperatureUnits(roundedLow);
+        return convertedHigh + "/" + convertedLow;
     }
 
     /**

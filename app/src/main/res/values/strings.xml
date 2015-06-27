@@ -6,4 +6,14 @@
     <string name="title_activity_detail">DetailActivity</string>
     <string name="location">Location</string>
     <string name="default_location_value">20011</string>
+    <string name="temperature_units">Temperature Units</string>
+    <string name="default_temp_value">metric</string>
+    <string-array name="temperature_entries">
+        <item>metric</item>
+        <item>imperial</item>
+    </string-array>
+    <string-array name="temperature_values">
+        <item>metric</item>
+        <item>imperial</item>
+    </string-array>
 </resources>
