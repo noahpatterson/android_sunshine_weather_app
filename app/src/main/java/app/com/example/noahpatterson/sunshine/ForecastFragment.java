@@ -60,6 +60,19 @@ public class ForecastFragment extends Fragment {
             updateWeather();
             return true;
         }
+        if (id == R.id.location_map) {
+            SharedPreferences shardPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            String location = shardPrefs.getString(getString(R.string.location), getString(R.string.default_location_value));
+
+            Uri formatGeo = Uri.parse("geo:0,0?q=" + location);
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(formatGeo);
+            if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+                startActivity(intent);
+            }
+
+
+        }
         return super.onOptionsItemSelected(item);
     }
 

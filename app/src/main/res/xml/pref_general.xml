@@ -20,4 +20,5 @@
         android:entryValues="@array/temperature_values"
         />
 
+
 </PreferenceScreen>
