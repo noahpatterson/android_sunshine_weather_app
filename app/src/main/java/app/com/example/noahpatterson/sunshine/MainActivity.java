@@ -3,6 +3,7 @@ package app.com.example.noahpatterson.sunshine;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -12,6 +13,37 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Log.d("lifecycle", "activity onCreate");
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.d("lifecycle", "activity onStart");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d("lifecycle", "activity onResume");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d("lifecycle", "activity onPause");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.d("lifecycle", "activity onStop");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d("lifecycle", "activity onDestroy");
     }
 
 

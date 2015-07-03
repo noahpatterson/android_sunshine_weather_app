@@ -42,9 +42,41 @@ public class ForecastFragment extends Fragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        updateWeather();
+        Log.d("lifecycle", "fragment onStart");
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        Log.d("lifecycle", "fragment onCreate");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d("lifecycle", "fragment onResume");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d("lifecycle", "fragment onPause");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.d("lifecycle", "fragment onStop");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d("lifecycle", "fragment onDestroy");
     }
 
     @Override
@@ -91,11 +123,7 @@ public class ForecastFragment extends Fragment {
         return temp;
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        updateWeather();
-    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
