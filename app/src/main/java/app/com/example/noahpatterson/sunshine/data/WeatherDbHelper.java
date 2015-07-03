@@ -3,7 +3,6 @@ package app.com.example.noahpatterson.sunshine.data;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import app.com.example.noahpatterson.sunshine.data.WeatherContract.LocationEntry;
 import app.com.example.noahpatterson.sunshine.data.WeatherContract.WeatherEntry;
@@ -63,13 +62,6 @@ public class WeatherDbHelper extends SQLiteOpenHelper {
 
                 ");";
 
-        Log.d("SQL: ", SQL_CREATE_LOCATION_TABLE);
-
-
-//        public static final String COLUMN_LOCATION_SETTING = "location_setting";
-//        public static final String COLUMN_COORD_LAT = "coord_lat";
-//        public static final String COLUMN_COORD_LONG = "coord_long";
-//        public static final String COLUMN_CITY_NAME = "city_name";
         db.execSQL(SQL_CREATE_WEATHER_TABLE);
         db.execSQL(SQL_CREATE_LOCATION_TABLE);
     }
