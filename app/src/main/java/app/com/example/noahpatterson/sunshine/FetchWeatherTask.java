@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.android.sunshine.app;
+package app.com.example.noahpatterson.sunshine;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -24,8 +24,6 @@ import android.preference.PreferenceManager;
 import android.text.format.Time;
 import android.util.Log;
 import android.widget.ArrayAdapter;
-
-import com.example.android.sunshine.app.data.WeatherContract.WeatherEntry;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -40,6 +38,8 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Vector;
+
+import app.com.example.noahpatterson.sunshine.data.WeatherContract.WeatherEntry;
 
 public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
 
@@ -77,16 +77,16 @@ public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
         // we start storing the values in a database.
         SharedPreferences sharedPrefs =
                 PreferenceManager.getDefaultSharedPreferences(mContext);
-        String unitType = sharedPrefs.getString(
-                mContext.getString(R.string.pref_units_key),
-                mContext.getString(R.string.pref_units_metric));
-
-        if (unitType.equals(mContext.getString(R.string.pref_units_imperial))) {
-            high = (high * 1.8) + 32;
-            low = (low * 1.8) + 32;
-        } else if (!unitType.equals(mContext.getString(R.string.pref_units_metric))) {
-            Log.d(LOG_TAG, "Unit type not found: " + unitType);
-        }
+//        String unitType = sharedPrefs.getString(
+//                mContext.getString(R.string.pref_units_key),
+//                mContext.getString(R.string.pref_units_metric));
+//
+//        if (unitType.equals(mContext.getString(R.string.pref_units_imperial))) {
+//            high = (high * 1.8) + 32;
+//            low = (low * 1.8) + 32;
+//        } else if (!unitType.equals(mContext.getString(R.string.pref_units_metric))) {
+//            Log.d(LOG_TAG, "Unit type not found: " + unitType);
+//        }
 
         // For presentation, assume the user doesn't care about tenths of a degree.
         long roundedHigh = Math.round(high);
