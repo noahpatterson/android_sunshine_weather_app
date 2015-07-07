@@ -30,6 +30,7 @@ public class WeatherProvider extends ContentProvider {
     private static final UriMatcher sUriMatcher = buildUriMatcher();
     private WeatherDbHelper mWeatherDbHelper;
 
+    // mapping URI/tables/queries to numbers for the switch statement
     public static final int WEATHER = 100;
     public static final int WEATHER_WITH_LOCATION = 101;
     public static final int WEATHER_WITH_LOCATION_AND_DATE = 102;
@@ -37,6 +38,7 @@ public class WeatherProvider extends ContentProvider {
 
     private static final SQLiteQueryBuilder sWeatherByLocationSettingQueryBuilder;
 
+    // build the base sql query before where clauses and sorting come in.
     static{
         sWeatherByLocationSettingQueryBuilder = new SQLiteQueryBuilder();
         
@@ -51,6 +53,7 @@ public class WeatherProvider extends ContentProvider {
                         "." + WeatherContract.LocationEntry._ID);
     }
 
+    // where clauses
     //location.location_setting = ?
     private static final String sLocationSettingSelection =
             WeatherContract.LocationEntry.TABLE_NAME+
@@ -68,6 +71,7 @@ public class WeatherProvider extends ContentProvider {
                     "." + WeatherContract.LocationEntry.COLUMN_LOCATION_SETTING + " = ? AND " +
                     WeatherContract.WeatherEntry.COLUMN_DATE + " = ? ";
 
+    // actual database query
     private Cursor getWeatherByLocationSetting(Uri uri, String[] projection, String sortOrder) {
         String locationSetting = WeatherContract.WeatherEntry.getLocationSettingFromUri(uri);
         long startDate = WeatherContract.WeatherEntry.getStartDateFromUri(uri);
@@ -93,6 +97,7 @@ public class WeatherProvider extends ContentProvider {
         );
     }
 
+    // another actual DB query
     private Cursor getWeatherByLocationSettingAndDate(
             Uri uri, String[] projection, String sortOrder) {
         String locationSetting = WeatherContract.WeatherEntry.getLocationSettingFromUri(uri);
