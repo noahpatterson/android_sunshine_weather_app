@@ -28,7 +28,7 @@ public class WeatherProvider extends ContentProvider {
 
     // The URI Matcher used by this content provider.
     private static final UriMatcher sUriMatcher = buildUriMatcher();
-    private WeatherDbHelper mOpenHelper;
+    private WeatherDbHelper mWeatherDbHelper;
 
     public static final int WEATHER = 100;
     public static final int WEATHER_WITH_LOCATION = 101;
@@ -83,7 +83,7 @@ public class WeatherProvider extends ContentProvider {
             selection = sLocationSettingWithStartDateSelection;
         }
 
-        return sWeatherByLocationSettingQueryBuilder.query(mOpenHelper.getReadableDatabase(),
+        return sWeatherByLocationSettingQueryBuilder.query(mWeatherDbHelper.getReadableDatabase(),
                 projection,
                 selection,
                 selectionArgs,
@@ -98,7 +98,7 @@ public class WeatherProvider extends ContentProvider {
         String locationSetting = WeatherContract.WeatherEntry.getLocationSettingFromUri(uri);
         long date = WeatherContract.WeatherEntry.getDateFromUri(uri);
 
-        return sWeatherByLocationSettingQueryBuilder.query(mOpenHelper.getReadableDatabase(),
+        return sWeatherByLocationSettingQueryBuilder.query(mWeatherDbHelper.getReadableDatabase(),
                 projection,
                 sLocationSettingAndDaySelection,
                 new String[]{locationSetting, Long.toString(date)},
@@ -140,7 +140,7 @@ public class WeatherProvider extends ContentProvider {
      */
     @Override
     public boolean onCreate() {
-        mOpenHelper = new WeatherDbHelper(getContext());
+        mWeatherDbHelper = new WeatherDbHelper(getContext());
         return true;
     }
 
@@ -192,12 +192,12 @@ public class WeatherProvider extends ContentProvider {
             }
             // "weather"
             case WEATHER: {
-                retCursor = mOpenHelper.getReadableDatabase().query(WeatherContract.WeatherEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
+                retCursor = mWeatherDbHelper.getReadableDatabase().query(WeatherContract.WeatherEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
                 break;
             }
             // "location"
             case LOCATION: {
-                retCursor = mOpenHelper.getReadableDatabase().query(WeatherContract.LocationEntry.TABLE_NAME,projection,selection,selectionArgs,null,null,sortOrder);
+                retCursor = mWeatherDbHelper.getReadableDatabase().query(WeatherContract.LocationEntry.TABLE_NAME,projection,selection,selectionArgs,null,null,sortOrder);
                 break;
             }
 
@@ -213,7 +213,7 @@ public class WeatherProvider extends ContentProvider {
      */
     @Override
     public Uri insert(Uri uri, ContentValues values) {
-        final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        final SQLiteDatabase db = mWeatherDbHelper.getWritableDatabase();
         final int match = sUriMatcher.match(uri);
         Uri returnUri;
 
@@ -268,7 +268,7 @@ public class WeatherProvider extends ContentProvider {
 
     @Override
     public int bulkInsert(Uri uri, ContentValues[] values) {
-        final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        final SQLiteDatabase db = mWeatherDbHelper.getWritableDatabase();
         final int match = sUriMatcher.match(uri);
         switch (match) {
             case WEATHER:
@@ -299,7 +299,7 @@ public class WeatherProvider extends ContentProvider {
     @Override
     @TargetApi(11)
     public void shutdown() {
-        mOpenHelper.close();
+        mWeatherDbHelper.close();
         super.shutdown();
     }
 }
