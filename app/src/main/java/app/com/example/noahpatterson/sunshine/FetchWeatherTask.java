@@ -77,16 +77,16 @@ public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
         // we start storing the values in a database.
         SharedPreferences sharedPrefs =
                 PreferenceManager.getDefaultSharedPreferences(mContext);
-//        String unitType = sharedPrefs.getString(
-//                mContext.getString(R.string.pref_units_key),
-//                mContext.getString(R.string.pref_units_metric));
-//
-//        if (unitType.equals(mContext.getString(R.string.pref_units_imperial))) {
-//            high = (high * 1.8) + 32;
-//            low = (low * 1.8) + 32;
-//        } else if (!unitType.equals(mContext.getString(R.string.pref_units_metric))) {
-//            Log.d(LOG_TAG, "Unit type not found: " + unitType);
-//        }
+        String unitType = sharedPrefs.getString(
+                mContext.getString(R.string.temperature_units),
+                mContext.getString(R.string.default_temp_value));
+
+        if (unitType.equals(mContext.getString(R.string.pref_units_imperial))) {
+            high = (high * 1.8) + 32;
+            low = (low * 1.8) + 32;
+        } else if (!unitType.equals(mContext.getString(R.string.pref_units_metric))) {
+            Log.d(LOG_TAG, "Unit type not found: " + unitType);
+        }
 
         // For presentation, assume the user doesn't care about tenths of a degree.
         long roundedHigh = Math.round(high);
