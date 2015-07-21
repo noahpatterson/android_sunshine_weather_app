@@ -2,6 +2,7 @@ package app.com.example.noahpatterson.sunshine;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -19,12 +20,14 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 
+import app.com.example.noahpatterson.sunshine.data.WeatherContract;
+
 /**
  * A placeholder fragment containing a simple view. A modular container
  */
 public class ForecastFragment extends Fragment {
 
-    private ArrayAdapter<String> forecastAdapter;
+    private ForecastAdapter forecastAdapter;
 
     public ForecastFragment() {
     }
@@ -97,9 +100,8 @@ public class ForecastFragment extends Fragment {
     }
 
     private void updateWeather() {
-        SharedPreferences shardPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        String location = shardPrefs.getString(getString(R.string.location), getString(R.string.default_location_value));
-        new FetchWeatherTask(getActivity().getBaseContext(),forecastAdapter).execute(location);
+        String location = Utility.getPreferredLocation(getActivity());
+        new FetchWeatherTask(getActivity()).execute(location);
     }
 
 //    private long changeTemperatureUnits(long temp) {
@@ -117,9 +119,20 @@ public class ForecastFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+//   // ------Get data from the database using a cusor and provider ---------------
+        // populate forecast adapater with cursor data
+        String locationSetting = Utility.getPreferredLocation(getActivity());
+        // Sort order Ascending, by date.
+        String sortOrder = WeatherContract.WeatherEntry.COLUMN_DATE + " ASC";
+        Uri weatherForLocationUri = WeatherContract.WeatherEntry.buildWeatherLocationWithStartDate(locationSetting, System.currentTimeMillis());
+
+        Cursor cur = getActivity().getContentResolver().query(weatherForLocationUri, null, null, null, sortOrder);
+
+        // ------ make a new ForecastAdapter -------------------
+        ForecastAdapter forecastAdapter = new ForecastAdapter(getActivity(), cur, 0);
 
         //R.layout refers to the actual xml file. R.id refers to the id of an element
-        forecastAdapter = new ArrayAdapter<String>(getActivity(), R.layout.list_item_forecast, R.id.list_item_forecast_text_view, new ArrayList<String>());
+//        forecastAdapter = new ArrayAdapter<String>(getActivity(), R.layout.list_item_forecast, R.id.list_item_forecast_text_view, new ArrayList<String>());
 
         // this finds the root view
         final View fragmentView = inflater.inflate(R.layout.fragment_main, container, false);
@@ -127,16 +140,17 @@ public class ForecastFragment extends Fragment {
         final ListView forecast_list_vew = (ListView) fragmentView.findViewById(R.id.listview_forecast);
         forecast_list_vew.setAdapter(forecastAdapter);
 
-        forecast_list_vew.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                CharSequence weatherInfoOfClicked = (CharSequence) forecast_list_vew.getItemAtPosition(position);
-//                Toast.makeText(forecast_list_vew.getContext(), weatherInfoOfClicked, Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(getActivity(), DetailActivity.class);
-                intent.putExtra(Intent.EXTRA_TEXT, weatherInfoOfClicked);
-                startActivity(intent);
-            }
-        });
+        // ------ cursor adapter doesn't because getItem from a CursorAdapter doesn't return a string--------
+//        forecast_list_vew.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                CharSequence weatherInfoOfClicked = (CharSequence) forecast_list_vew.getItemAtPosition(position);
+////                Toast.makeText(forecast_list_vew.getContext(), weatherInfoOfClicked, Toast.LENGTH_SHORT).show();
+//                Intent intent = new Intent(getActivity(), DetailActivity.class);
+//                intent.putExtra(Intent.EXTRA_TEXT, weatherInfoOfClicked);
+//                startActivity(intent);
+//            }
+//        });
 
         return fragmentView;
     }
