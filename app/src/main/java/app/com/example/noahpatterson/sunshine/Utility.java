@@ -16,18 +16,18 @@ package app.com.example.noahpatterson.sunshine;
  * limitations under the License.
  */
 
-        import android.content.Context;
+import android.content.Context;
         import android.content.SharedPreferences;
         import android.preference.PreferenceManager;
 
         import java.text.DateFormat;
         import java.util.Date;
 
+// abstracts out common methods
 public class Utility {
     public static String getPreferredLocation(Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        return prefs.getString(context.getString(R.string.temperature_units),
-                context.getString(R.string.default_location_value));
+        return prefs.getString(context.getString(R.string.location),context.getString(R.string.default_location_value));
     }
 
     public static boolean isMetric(Context context) {
