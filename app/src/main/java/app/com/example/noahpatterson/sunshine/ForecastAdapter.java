@@ -1,14 +1,12 @@
 package app.com.example.noahpatterson.sunshine;
 
         import android.content.Context;
-        import android.database.Cursor;
-        import android.support.v4.widget.CursorAdapter;
-        import android.view.LayoutInflater;
-        import android.view.View;
-        import android.view.ViewGroup;
-        import android.widget.TextView;
-
-        import app.com.example.noahpatterson.sunshine.data.WeatherContract;
+import android.database.Cursor;
+import android.support.v4.widget.CursorAdapter;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
 /**
  * {@link ForecastAdapter} exposes a list of weather forecasts
@@ -33,18 +31,26 @@ public class ForecastAdapter extends CursorAdapter {
         string.
      */
     private String convertCursorRowToUXFormat(Cursor cursor) {
-        // get row indices for our cursor
-        int idx_max_temp = cursor.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_MAX_TEMP);
-        int idx_min_temp = cursor.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_MIN_TEMP);
-        int idx_date = cursor.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_DATE);
-        int idx_short_desc = cursor.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_SHORT_DESC);
+
+
+        // These indices are tied to FORECAST_COLUMNS.  If FORECAST_COLUMNS changes, these
+        // must change.
+        final int COL_WEATHER_ID = 0;
+        final int COL_WEATHER_DATE = 1;
+        final int COL_WEATHER_DESC = 2;
+        final int COL_WEATHER_MAX_TEMP = 3;
+        final int COL_WEATHER_MIN_TEMP = 4;
+        final int COL_LOCATION_SETTING = 5;
+        final int COL_WEATHER_CONDITION_ID = 6;
+        final int COL_COORD_LAT = 7;
+        final int COL_COORD_LONG = 8;
 
         String highAndLow = formatHighLows(
-                cursor.getDouble(idx_max_temp),
-                cursor.getDouble(idx_min_temp));
+                cursor.getDouble(COL_WEATHER_MAX_TEMP),
+                cursor.getDouble(COL_WEATHER_MIN_TEMP));
 
-        return Utility.formatDate(cursor.getLong(idx_date)) +
-                " - " + cursor.getString(idx_short_desc) +
+        return Utility.formatDate(cursor.getLong(COL_WEATHER_DATE)) +
+                " - " + cursor.getString(COL_WEATHER_DESC) +
                 " - " + highAndLow;
     }
 
