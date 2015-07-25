@@ -246,7 +246,7 @@ public class FetchWeatherTask extends AsyncTask<String, Void, Void> {
                 inserted = mContext.getContentResolver().bulkInsert(WeatherEntry.CONTENT_URI, allWeatherContentValues);
             }
 
-            Log.d(LOG_TAG, "FetchWeatherTask Complete. " + inserted + " Inserted");
+            Log.d(LOG_TAG, "FetchWeatherTask Complete. " + inserted + " Inserted: " + cVVector.toString());
 
         } catch (JSONException e) {
             Log.e(LOG_TAG, e.getMessage(), e);
