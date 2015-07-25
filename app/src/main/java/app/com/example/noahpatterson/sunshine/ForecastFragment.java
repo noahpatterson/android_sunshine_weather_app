@@ -28,6 +28,8 @@ import app.com.example.noahpatterson.sunshine.data.WeatherContract;
 public class ForecastFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private ForecastAdapter forecastAdapter;
+
+
     // These indices are tied to FORECAST_COLUMNS.  If FORECAST_COLUMNS changes, these
     // must change.
     public static final int COL_WEATHER_ID = 0;
@@ -46,7 +48,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public void onStart() {
         super.onStart();
-        updateWeather();
+//        updateWeather();
         Log.d("lifecycle", "fragment onStart");
     }
 
@@ -54,7 +56,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        getLoaderManager().initLoader(0,null,this);
+        getLoaderManager().initLoader(0, null, this);
 
     }
 
@@ -97,6 +99,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setHasOptionsMenu(true);
         Log.d("lifecycle", "fragment onCreate");
     }
@@ -105,7 +108,8 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     public void onResume() {
         super.onResume();
         Log.d("lifecycle", "fragment onResume");
-        getLoaderManager().restartLoader(0,null,this);
+//        getLoaderManager().restartLoader(0, null, this);
+
     }
 
     @Override
@@ -183,11 +187,16 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
                 if (cursor != null) {
                     String locationSetting = cursor.getString(COL_LOCATION_SETTING);
                     Intent intent = new Intent(getActivity(), DetailActivity.class)
-                            .setData(WeatherContract.WeatherEntry.buildWeatherLocationWithDate(locationSetting,cursor.getLong(COL_WEATHER_DATE)));
+                            .setData(WeatherContract.WeatherEntry.buildWeatherLocationWithDate(locationSetting, cursor.getLong(COL_WEATHER_DATE)));
                     startActivity(intent);
                 }
             }
         });
         return fragmentView;
+    }
+
+    public void onLocationChanged() {
+        updateWeather();
+        getLoaderManager().restartLoader(0, null, this);
     }
 }
