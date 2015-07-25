@@ -4,4 +4,5 @@
     android:name="app.com.example.noahpatterson.sunshine.ForecastFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:layout="@layout/fragment_main" />
+    tools:layout="@layout/fragment_main"
+    android:tag="forecastFragment"/>
