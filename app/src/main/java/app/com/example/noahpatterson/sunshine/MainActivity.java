@@ -1,7 +1,9 @@
 package app.com.example.noahpatterson.sunshine;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -9,11 +11,18 @@ import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity {
 
+    private String mLocation;
+    public static final String FORECASTFRAGMENT_TAG = "forecastFragment";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Log.d("lifecycle", "activity onCreate");
+
+
+        SharedPreferences shardPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        mLocation = shardPrefs.getString(getString(R.string.location), getString(R.string.default_location_value));
     }
 
     @Override
@@ -26,6 +35,14 @@ public class MainActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
         Log.d("lifecycle", "activity onResume");
+
+        if (Utility.getPreferredLocation(this) != mLocation) {
+            ForecastFragment ff = (ForecastFragment)getSupportFragmentManager().findFragmentByTag(FORECASTFRAGMENT_TAG);
+            if (ff != null) {
+                ff.onLocationChanged();
+                mLocation = Utility.getPreferredLocation(this);
+            }
+        }
     }
 
     @Override
