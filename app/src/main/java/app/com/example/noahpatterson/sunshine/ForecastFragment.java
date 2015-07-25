@@ -93,6 +93,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     public void onResume() {
         super.onResume();
         Log.d("lifecycle", "fragment onResume");
+        getLoaderManager().restartLoader(0,null,this);
     }
 
     @Override
