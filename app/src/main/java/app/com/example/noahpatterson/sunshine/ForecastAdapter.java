@@ -49,7 +49,7 @@ public class ForecastAdapter extends CursorAdapter {
                 cursor.getDouble(COL_WEATHER_MAX_TEMP),
                 cursor.getDouble(COL_WEATHER_MIN_TEMP));
 
-        return Utility.formatDate(cursor.getLong(COL_WEATHER_DATE)) +
+        return cursor.getString(COL_LOCATION_SETTING) + " - " + Utility.formatDate(cursor.getLong(COL_WEATHER_DATE)) +
                 " - " + cursor.getString(COL_WEATHER_DESC) +
                 " - " + highAndLow;
     }
