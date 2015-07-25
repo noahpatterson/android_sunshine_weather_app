@@ -17,6 +17,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import app.com.example.noahpatterson.sunshine.data.WeatherContract;
@@ -27,6 +28,17 @@ import app.com.example.noahpatterson.sunshine.data.WeatherContract;
 public class ForecastFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private ForecastAdapter forecastAdapter;
+    // These indices are tied to FORECAST_COLUMNS.  If FORECAST_COLUMNS changes, these
+    // must change.
+    public static final int COL_WEATHER_ID = 0;
+    public static final int COL_WEATHER_DATE = 1;
+    public static final int COL_WEATHER_DESC = 2;
+    public static final int COL_WEATHER_MAX_TEMP = 3;
+    public static final int COL_WEATHER_MIN_TEMP = 4;
+    public static final int COL_LOCATION_SETTING = 5;
+    public static final int COL_WEATHER_CONDITION_ID = 6;
+    public static final int COL_COORD_LAT = 7;
+    public static final int COL_COORD_LONG = 8;
 
     public ForecastFragment() {
     }
@@ -152,8 +164,6 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-//   // ------Get data from the database using a cusor and provider ---------------
-
         // ------ make a new ForecastAdapter -------------------
         forecastAdapter = new ForecastAdapter(getActivity(), null, 0);
 
@@ -166,7 +176,18 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         forecast_list_vew.setAdapter(forecastAdapter);
 
         // ------ cursor adapter doesn't because getItem from a CursorAdapter doesn't return a string--------
-
+        forecast_list_vew.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Cursor cursor = (Cursor) parent.getItemAtPosition(position);
+                if (cursor != null) {
+                    String locationSetting = cursor.getString(COL_LOCATION_SETTING);
+                    Intent intent = new Intent(getActivity(), DetailActivity.class)
+                            .setData(WeatherContract.WeatherEntry.buildWeatherLocationWithDate(locationSetting,cursor.getLong(COL_WEATHER_DATE)));
+                    startActivity(intent);
+                }
+            }
+        });
         return fragmentView;
     }
 }
