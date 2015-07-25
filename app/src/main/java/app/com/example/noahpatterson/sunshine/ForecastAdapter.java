@@ -33,24 +33,14 @@ public class ForecastAdapter extends CursorAdapter {
     private String convertCursorRowToUXFormat(Cursor cursor) {
 
 
-        // These indices are tied to FORECAST_COLUMNS.  If FORECAST_COLUMNS changes, these
-        // must change.
-        final int COL_WEATHER_ID = 0;
-        final int COL_WEATHER_DATE = 1;
-        final int COL_WEATHER_DESC = 2;
-        final int COL_WEATHER_MAX_TEMP = 3;
-        final int COL_WEATHER_MIN_TEMP = 4;
-        final int COL_LOCATION_SETTING = 5;
-        final int COL_WEATHER_CONDITION_ID = 6;
-        final int COL_COORD_LAT = 7;
-        final int COL_COORD_LONG = 8;
+
 
         String highAndLow = formatHighLows(
-                cursor.getDouble(COL_WEATHER_MAX_TEMP),
-                cursor.getDouble(COL_WEATHER_MIN_TEMP));
+                cursor.getDouble(ForecastFragment.COL_WEATHER_MAX_TEMP),
+                cursor.getDouble(ForecastFragment.COL_WEATHER_MIN_TEMP));
 
-        return cursor.getString(COL_LOCATION_SETTING) + " - " + Utility.formatDate(cursor.getLong(COL_WEATHER_DATE)) +
-                " - " + cursor.getString(COL_WEATHER_DESC) +
+        return cursor.getString(ForecastFragment.COL_LOCATION_SETTING) + " - " + Utility.formatDate(cursor.getLong(ForecastFragment.COL_WEATHER_DATE)) +
+                " - " + cursor.getString(ForecastFragment.COL_WEATHER_DESC) +
                 " - " + highAndLow;
     }
 
