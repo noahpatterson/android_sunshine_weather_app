@@ -27,6 +27,13 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
 
     private String mForecastString;
     private ShareActionProvider mShareActionProvider;
+    private TextView mtextDate;
+            private TextView mtextHigh;
+    private TextView mtextLow;
+            private TextView mtextHumidity;
+    private TextView mtextWind;
+            private TextView mtextPressure;
+    private TextView mtextForecast;
 //    private Uri detailURI;
 
     public DetailActivityFragment() {
@@ -56,7 +63,11 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
                 WeatherContract.LocationEntry.COLUMN_LOCATION_SETTING,
                 WeatherContract.WeatherEntry.COLUMN_WEATHER_ID,
                 WeatherContract.LocationEntry.COLUMN_COORD_LAT,
-                WeatherContract.LocationEntry.COLUMN_COORD_LONG
+                WeatherContract.LocationEntry.COLUMN_COORD_LONG,
+                WeatherContract.WeatherEntry.COLUMN_HUMIDITY,
+                WeatherContract.WeatherEntry.COLUMN_WIND_SPEED,
+                WeatherContract.WeatherEntry.COLUMN_PRESSURE,
+                WeatherContract.WeatherEntry.COLUMN_DEGREES
         };
         Intent intent = getActivity().getIntent();
         Uri detailURI = intent.getData();
@@ -69,13 +80,21 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
 
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         data.moveToFirst();
-        TextView text = (TextView) getActivity().findViewById(R.id.textView);
+
         String highFormatted = Utility.formatTemperature(getActivity(), data.getDouble(ForecastFragment.COL_WEATHER_MAX_TEMP), Utility.isMetric(getActivity()));
         String lowFormatted = Utility.formatTemperature(getActivity(), data.getDouble(ForecastFragment.COL_WEATHER_MIN_TEMP), Utility.isMetric(getActivity()));
 
         String formattedWeather = data.getString(ForecastFragment.COL_LOCATION_SETTING) + " - " + Utility.formatDate(data.getLong(ForecastFragment.COL_WEATHER_DATE)) + " - " + data.getString(ForecastFragment.COL_WEATHER_DESC) + " - " + highFormatted + "/" + lowFormatted;
         mForecastString = formattedWeather;
-        text.setText(formattedWeather);
+
+        mtextDate.setText(Utility.getFriendlyDayString(getActivity(),data.getLong(ForecastFragment.COL_WEATHER_DATE)));
+        mtextHigh.setText(highFormatted);
+        mtextLow.setText(lowFormatted);
+        mtextHumidity.setText(getActivity().getString(R.string.format_humidity, data.getFloat(ForecastFragment.COL_WIND)));
+        mtextWind.setText(Utility.getFormattedWind(getActivity(),data.getInt(ForecastFragment.COL_WIND),data.getInt(ForecastFragment.COL_WIND_DEGREES)));
+        mtextPressure.setText(getActivity().getString(R.string.format_pressure, data.getFloat(ForecastFragment.COL_PRESSURE)));
+        mtextForecast.setText(data.getString(ForecastFragment.COL_WEATHER_DESC));
+//        text.setText(formattedWeather);
         if (mShareActionProvider != null) {
             mShareActionProvider.setShareIntent(createShareIntent());
         }
@@ -100,11 +119,18 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
-        TextView text = (TextView) rootView.findViewById(R.id.textView);
+//        TextView text = (TextView) rootView.findViewById(R.id.textView);
 //        Intent intent = getActivity().getIntent();
 //        mForecastString = intent.getDataString();
 //        detailURI = intent.getData();
 //        text.setText(mForecastString);
+        mtextDate = (TextView) rootView.findViewById(R.id.detail_date);
+        mtextHigh = (TextView) rootView.findViewById(R.id.detail_high);
+        mtextLow = (TextView) rootView.findViewById(R.id.detail_low);
+        mtextHumidity = (TextView) rootView.findViewById(R.id.detail_humidity);
+        mtextWind = (TextView) rootView.findViewById(R.id.detail_wind);
+        mtextPressure = (TextView) rootView.findViewById(R.id.detail_pressure);
+        mtextForecast = (TextView) rootView.findViewById(R.id.detail_forecast);
         return rootView;
     }
 

@@ -41,6 +41,10 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     public static final int COL_WEATHER_CONDITION_ID = 6;
     public static final int COL_COORD_LAT = 7;
     public static final int COL_COORD_LONG = 8;
+    public static final int COL_HUMIDITY = 9;
+    public static final int COL_WIND = 10;
+    public static final int COL_PRESSURE = 11;
+    public static final int COL_WIND_DEGREES = 12;
 
     public ForecastFragment() {
     }
@@ -82,7 +86,11 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
                 WeatherContract.LocationEntry.COLUMN_LOCATION_SETTING,
                 WeatherContract.WeatherEntry.COLUMN_WEATHER_ID,
                 WeatherContract.LocationEntry.COLUMN_COORD_LAT,
-                WeatherContract.LocationEntry.COLUMN_COORD_LONG
+                WeatherContract.LocationEntry.COLUMN_COORD_LONG,
+                WeatherContract.WeatherEntry.COLUMN_HUMIDITY,
+                WeatherContract.WeatherEntry.COLUMN_WIND_SPEED,
+                WeatherContract.WeatherEntry.COLUMN_PRESSURE,
+                WeatherContract.WeatherEntry.COLUMN_DEGREES
         };
 
         return new CursorLoader(getActivity(), weatherForLocationUri, FORECAST_COLUMNS, null, null, sortOrder);
