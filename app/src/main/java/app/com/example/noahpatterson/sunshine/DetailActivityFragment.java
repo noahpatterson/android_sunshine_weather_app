@@ -70,8 +70,8 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         data.moveToFirst();
         TextView text = (TextView) getActivity().findViewById(R.id.textView);
-        String highFormatted = Utility.formatTemperature(data.getDouble(ForecastFragment.COL_WEATHER_MAX_TEMP), Utility.isMetric(getActivity()));
-        String lowFormatted = Utility.formatTemperature(data.getDouble(ForecastFragment.COL_WEATHER_MIN_TEMP), Utility.isMetric(getActivity()));
+        String highFormatted = Utility.formatTemperature(getActivity(), data.getDouble(ForecastFragment.COL_WEATHER_MAX_TEMP), Utility.isMetric(getActivity()));
+        String lowFormatted = Utility.formatTemperature(getActivity(), data.getDouble(ForecastFragment.COL_WEATHER_MIN_TEMP), Utility.isMetric(getActivity()));
 
         String formattedWeather = data.getString(ForecastFragment.COL_LOCATION_SETTING) + " - " + Utility.formatDate(data.getLong(ForecastFragment.COL_WEATHER_DATE)) + " - " + data.getString(ForecastFragment.COL_WEATHER_DESC) + " - " + highFormatted + "/" + lowFormatted;
         mForecastString = formattedWeather;
