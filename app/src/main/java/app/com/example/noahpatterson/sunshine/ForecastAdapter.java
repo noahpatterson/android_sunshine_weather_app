@@ -6,6 +6,7 @@ import android.support.v4.widget.CursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+        import android.widget.ImageView;
         import android.widget.TextView;
 
         import java.util.HashMap;
@@ -25,12 +26,14 @@ public class ForecastAdapter extends CursorAdapter {
          public TextView forecast;
          public TextView highTemp;
          public TextView lowTemp;
+         public ImageView conditionImage;
 
          public ViewHolder(View view) {
              date      = (TextView)view.findViewById(R.id.list_item_date_textview);
              forecast  = (TextView)view.findViewById(R.id.list_item_forecast_textview);
              highTemp  = (TextView)view.findViewById(R.id.list_item_high_textview);
              lowTemp   = (TextView)view.findViewById(R.id.list_item_low_textview);
+             conditionImage = (ImageView)view.findViewById(R.id.list_item_icon);
          }
     }
     /**
@@ -114,5 +117,11 @@ public class ForecastAdapter extends CursorAdapter {
         viewHolder.highTemp.setText(Utility.formatTemperature(context, cursor.getDouble(ForecastFragment.COL_WEATHER_MAX_TEMP), Utility.isMetric(context)));
 
         viewHolder.lowTemp.setText(Utility.formatTemperature(context, cursor.getDouble(ForecastFragment.COL_WEATHER_MIN_TEMP), Utility.isMetric(context)));
+
+        if (getItemViewType(cursor.getPosition()) == 0 ) {
+            viewHolder.conditionImage.setImageResource(Utility.getIconResourceForWeatherCondition(cursor.getInt(ForecastFragment.COL_WEATHER_CONDITION_ID)));
+        } else {
+            viewHolder.conditionImage.setImageResource(Utility.getArtResourceForWeatherCondition(cursor.getInt(ForecastFragment.COL_WEATHER_CONDITION_ID)));
+        }
     }
 }

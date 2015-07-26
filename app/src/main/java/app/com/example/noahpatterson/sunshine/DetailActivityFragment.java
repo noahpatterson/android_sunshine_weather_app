@@ -16,6 +16,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import app.com.example.noahpatterson.sunshine.data.WeatherContract;
@@ -28,12 +29,13 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
     private String mForecastString;
     private ShareActionProvider mShareActionProvider;
     private TextView mtextDate;
-            private TextView mtextHigh;
+    private TextView mtextHigh;
     private TextView mtextLow;
-            private TextView mtextHumidity;
+    private TextView mtextHumidity;
     private TextView mtextWind;
-            private TextView mtextPressure;
+    private TextView mtextPressure;
     private TextView mtextForecast;
+    private ImageView mConditionIcon;
 //    private Uri detailURI;
 
     public DetailActivityFragment() {
@@ -91,9 +93,11 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
         mtextHigh.setText(highFormatted);
         mtextLow.setText(lowFormatted);
         mtextHumidity.setText(getActivity().getString(R.string.format_humidity, data.getFloat(ForecastFragment.COL_WIND)));
-        mtextWind.setText(Utility.getFormattedWind(getActivity(),data.getInt(ForecastFragment.COL_WIND),data.getInt(ForecastFragment.COL_WIND_DEGREES)));
+        mtextWind.setText(Utility.getFormattedWind(getActivity(), data.getInt(ForecastFragment.COL_WIND), data.getInt(ForecastFragment.COL_WIND_DEGREES)));
         mtextPressure.setText(getActivity().getString(R.string.format_pressure, data.getFloat(ForecastFragment.COL_PRESSURE)));
         mtextForecast.setText(data.getString(ForecastFragment.COL_WEATHER_DESC));
+        mConditionIcon.setImageResource(Utility.getArtResourceForWeatherCondition(data.getInt(ForecastFragment.COL_WEATHER_CONDITION_ID)));
+
 //        text.setText(formattedWeather);
         if (mShareActionProvider != null) {
             mShareActionProvider.setShareIntent(createShareIntent());
@@ -131,6 +135,7 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
         mtextWind = (TextView) rootView.findViewById(R.id.detail_wind);
         mtextPressure = (TextView) rootView.findViewById(R.id.detail_pressure);
         mtextForecast = (TextView) rootView.findViewById(R.id.detail_forecast);
+        mConditionIcon = (ImageView) rootView.findViewById(R.id.detail_condition_icon);
         return rootView;
     }
 
