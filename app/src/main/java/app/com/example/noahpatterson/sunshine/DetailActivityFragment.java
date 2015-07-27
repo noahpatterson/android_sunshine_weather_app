@@ -72,6 +72,9 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
                 WeatherContract.WeatherEntry.COLUMN_DEGREES
         };
         Intent intent = getActivity().getIntent();
+        if (intent == null || intent.getData() == null) {
+            return null;
+        }
         Uri detailURI = intent.getData();
         return new CursorLoader(getActivity(), detailURI,FORECAST_COLUMNS, null, null, null);
     }

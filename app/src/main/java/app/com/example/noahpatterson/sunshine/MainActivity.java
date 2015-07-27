@@ -12,7 +12,8 @@ import android.view.MenuItem;
 public class MainActivity extends AppCompatActivity {
 
     private String mLocation;
-    public static final String FORECASTFRAGMENT_TAG = "forecastFragment";
+    private Boolean mTwoPane;
+    private static final String DETAILFRAGMENT_TAG = "DFTAG";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +24,22 @@ public class MainActivity extends AppCompatActivity {
 
         SharedPreferences shardPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         mLocation = shardPrefs.getString(getString(R.string.location), getString(R.string.default_location_value));
+        if (findViewById(R.id.weather_detail_container) != null) {
+            // The detail container view will be present only in the large-screen layouts
+            // (res/layout-sw600dp). If this view is present, then the activity should be
+            // in two-pane mode.
+            mTwoPane = true;
+            // In two-pane mode, show the detail view in this activity by
+            // adding or replacing the detail fragment using a
+            // fragment transaction.
+            if (savedInstanceState == null) {
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.weather_detail_container, new DetailActivityFragment(), DETAILFRAGMENT_TAG)
+                        .commit();
+            }
+        } else {
+            mTwoPane = false;
+        }
     }
 
     @Override
@@ -37,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d("lifecycle", "activity onResume");
 
         if (Utility.getPreferredLocation(this) != mLocation) {
-            ForecastFragment ff = (ForecastFragment)getSupportFragmentManager().findFragmentByTag(FORECASTFRAGMENT_TAG);
+            ForecastFragment ff = (ForecastFragment)getSupportFragmentManager().findFragmentById(R.id.fragment_forecast);
             if (ff != null) {
                 ff.onLocationChanged();
                 mLocation = Utility.getPreferredLocation(this);

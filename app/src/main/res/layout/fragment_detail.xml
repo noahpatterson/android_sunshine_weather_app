@@ -17,6 +17,7 @@
             android:layout_height="wrap_content"
             android:textSize="24sp"
             tools:text="date"
+            android:text="date"
             android:id="@+id/detail_date"/>
 
 
@@ -42,6 +43,7 @@
                     android:layout_height="wrap_content"
                     android:textSize="32sp"
                     tools:text="high"
+                    android:text="high"
                     android:id="@+id/detail_high"/>
 
                 <TextView
@@ -49,6 +51,7 @@
                     android:layout_height="wrap_content"
                     android:textSize="24sp"
                     tools:text="low"
+                    android:text="low"
                     android:id="@+id/detail_low"/>
             </LinearLayout>
             <LinearLayout
@@ -69,6 +72,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     tools:text="forecast"
+                    android:text="forecast"
                     android:textSize="24sp"
                     android:id="@+id/detail_forecast"/>
 
@@ -89,6 +93,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="24sp"
                 tools:text="humidity"
+                android:text="humidity"
                 android:id="@+id/detail_humidity"/>
 
             <TextView
@@ -96,6 +101,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="24sp"
                 tools:text="wind"
+                android:text="wind"
                 android:id="@+id/detail_wind"/>
 
             <TextView
@@ -103,6 +109,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="24sp"
                 tools:text="pressure"
+                android:text="pressure"
                 android:id="@+id/detail_pressure"/>
         </LinearLayout>
     </LinearLayout>
