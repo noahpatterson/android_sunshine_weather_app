@@ -45,7 +45,7 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        getLoaderManager().initLoader(0,null,this);
+        getLoaderManager().initLoader(0, null, this);
     }
 
     @Override
@@ -71,19 +71,15 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
                 WeatherContract.WeatherEntry.COLUMN_PRESSURE,
                 WeatherContract.WeatherEntry.COLUMN_DEGREES
         };
-        Intent intent = getActivity().getIntent();
-        if (intent == null || intent.getData() == null) {
-            if (this.getArguments() != null) {
-                Uri detailURI = Uri.parse(this.getArguments().getString("dateUri"));
-                mUri = detailURI;
-                return new CursorLoader(getActivity(), detailURI, FORECAST_COLUMNS, null, null, null);
-            } else {
-                return null;
-            }
+//        Intent intent = getActivity().getIntent();
+//        if (intent == null || intent.getData() == null) {
+
+                return new CursorLoader(getActivity(), mUri, FORECAST_COLUMNS, null, null, null);
+
         }
-        Uri detailURI = intent.getData();
-        return new CursorLoader(getActivity(), detailURI,FORECAST_COLUMNS, null, null, null);
-    }
+//        Uri detailURI = intent.getData();
+//        return new CursorLoader(getActivity(), detailURI,FORECAST_COLUMNS, null, null, null);
+//    }
 
     public void onLoaderReset(Loader<Cursor> loader) {
 
@@ -131,12 +127,11 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        if (mUri != null) {
+            mUri = this.getArguments().getParcelable("dateUri");
+        }
+
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
-//        TextView text = (TextView) rootView.findViewById(R.id.textView);
-//        Intent intent = getActivity().getIntent();
-//        mForecastString = intent.getDataString();
-//        detailURI = intent.getData();
-//        text.setText(mForecastString);
         mtextDate = (TextView) rootView.findViewById(R.id.detail_date);
         mtextHigh = (TextView) rootView.findViewById(R.id.detail_high);
         mtextLow = (TextView) rootView.findViewById(R.id.detail_low);

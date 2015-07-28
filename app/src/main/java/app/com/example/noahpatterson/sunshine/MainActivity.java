@@ -10,8 +10,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import app.com.example.noahpatterson.sunshine.data.WeatherContract;
-
 public class MainActivity extends AppCompatActivity implements ForecastFragment.Callback {
 
     private String mLocation;
@@ -55,15 +53,6 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
     public void onResume() {
         super.onResume();
         Log.d("lifecycle", "activity onResume");
-
-//        if (Utility.getPreferredLocation(this) != mLocation) {
-//            ForecastFragment ff = (ForecastFragment)getSupportFragmentManager().findFragmentById(R.id.fragment_forecast);
-//            if (ff != null) {
-//                ff.onLocationChanged();
-//                mLocation = Utility.getPreferredLocation(this);
-//            }
-//        }
-
         // update the location in our second pane using the fragment manager
         String location = Utility.getPreferredLocation( this );
         if (location != null && !location.equals(mLocation)) {
@@ -128,7 +117,8 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
         if (mTwoPane) {
             DetailActivityFragment detailActivityFragment = new DetailActivityFragment();
             Bundle args = new Bundle();
-            args.putString("dateUri", dateUri.toString());
+//            args.putString("dateUri", dateUri.toString());
+            args.putParcelable("dateUri", dateUri);
             detailActivityFragment.setArguments(args);
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.weather_detail_container, detailActivityFragment, DETAILFRAGMENT_TAG)
@@ -141,9 +131,8 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
 //                        .setData(WeatherContract.WeatherEntry.buildWeatherLocationWithDate(locationSetting, cursor.getLong(COL_WEATHER_DATE)));
 //                startActivity(intent);
 //            }
-            Long date = WeatherContract.WeatherEntry.getDateFromUri(dateUri);
             Intent intent = new Intent(this, DetailActivity.class)
-                    .setData(WeatherContract.WeatherEntry.buildWeatherLocationWithDate(mLocation, date));
+                    .setData(dateUri);
             startActivity(intent);
         }
     }
