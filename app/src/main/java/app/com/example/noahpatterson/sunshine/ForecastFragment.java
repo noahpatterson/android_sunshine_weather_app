@@ -204,7 +204,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Cursor cursor = (Cursor) parent.getItemAtPosition(position);
-                String locationSetting = cursor.getString(COL_LOCATION_SETTING);
+                String locationSetting = Utility.getPreferredLocation(getActivity());
                 if (cursor != null) {
                     Uri dateUri = WeatherContract.WeatherEntry.buildWeatherLocationWithDate(locationSetting, cursor.getLong(COL_WEATHER_DATE));
 //                    String locationSetting = cursor.getString(COL_LOCATION_SETTING);
