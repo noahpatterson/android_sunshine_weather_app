@@ -36,7 +36,7 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
     private TextView mtextPressure;
     private TextView mtextForecast;
     private ImageView mConditionIcon;
-//    private Uri detailURI;
+    private Uri mUri;
 
     public DetailActivityFragment() {
         setHasOptionsMenu(true);
@@ -73,7 +73,13 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
         };
         Intent intent = getActivity().getIntent();
         if (intent == null || intent.getData() == null) {
-            return null;
+            if (this.getArguments() != null) {
+                Uri detailURI = Uri.parse(this.getArguments().getString("dateUri"));
+                mUri = detailURI;
+                return new CursorLoader(getActivity(), detailURI, FORECAST_COLUMNS, null, null, null);
+            } else {
+                return null;
+            }
         }
         Uri detailURI = intent.getData();
         return new CursorLoader(getActivity(), detailURI,FORECAST_COLUMNS, null, null, null);
@@ -148,5 +154,16 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
         intent.setType("text/plain");
         intent.putExtra(Intent.EXTRA_TEXT, mForecastString);
         return intent;
+    }
+
+    void onLocationChanged( String newLocation ) {
+        // replace the uri, since the location has changed
+        Uri uri = mUri;
+        if (null != uri) {
+            long date = WeatherContract.WeatherEntry.getDateFromUri(uri);
+            Uri updatedUri = WeatherContract.WeatherEntry.buildWeatherLocationWithDate(newLocation, date);
+            mUri = updatedUri;
+            getLoaderManager().restartLoader(0, null, this);
+        }
     }
 }

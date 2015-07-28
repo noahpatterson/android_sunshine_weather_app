@@ -27,8 +27,19 @@ import app.com.example.noahpatterson.sunshine.data.WeatherContract;
  */
 public class ForecastFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    private ForecastAdapter forecastAdapter;
+    /**
+     * A callback interface that all activities containing this fragment must
+     * implement. This mechanism allows activities to be notified of item
+     * selections.
+     */
+    public interface Callback {
+        /**
+         * DetailFragmentCallback for when an item has been selected.
+         */
+        public void onItemSelected(Uri dateUri);
+    }
 
+    private ForecastAdapter forecastAdapter;
 
     // These indices are tied to FORECAST_COLUMNS.  If FORECAST_COLUMNS changes, these
     // must change.
@@ -118,6 +129,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         Log.d("lifecycle", "fragment onResume");
 //        getLoaderManager().restartLoader(0, null, this);
 
+
     }
 
     @Override
@@ -192,11 +204,15 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Cursor cursor = (Cursor) parent.getItemAtPosition(position);
+                String locationSetting = cursor.getString(COL_LOCATION_SETTING);
                 if (cursor != null) {
-                    String locationSetting = cursor.getString(COL_LOCATION_SETTING);
-                    Intent intent = new Intent(getActivity(), DetailActivity.class)
-                            .setData(WeatherContract.WeatherEntry.buildWeatherLocationWithDate(locationSetting, cursor.getLong(COL_WEATHER_DATE)));
-                    startActivity(intent);
+                    Uri dateUri = WeatherContract.WeatherEntry.buildWeatherLocationWithDate(locationSetting, cursor.getLong(COL_WEATHER_DATE));
+//                    String locationSetting = cursor.getString(COL_LOCATION_SETTING);
+//                    Intent intent = new Intent(getActivity(), DetailActivity.class)
+//                            .setData(WeatherContract.WeatherEntry.buildWeatherLocationWithDate(locationSetting, cursor.getLong(COL_WEATHER_DATE)));
+//                    startActivity(intent);
+                    ((Callback) getActivity())
+                            .onItemSelected(dateUri);
                 }
             }
         });

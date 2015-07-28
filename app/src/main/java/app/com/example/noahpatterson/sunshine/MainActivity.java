@@ -2,6 +2,7 @@ package app.com.example.noahpatterson.sunshine;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -9,7 +10,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class MainActivity extends AppCompatActivity {
+import app.com.example.noahpatterson.sunshine.data.WeatherContract;
+
+public class MainActivity extends AppCompatActivity implements ForecastFragment.Callback {
 
     private String mLocation;
     private Boolean mTwoPane;
@@ -53,12 +56,26 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         Log.d("lifecycle", "activity onResume");
 
-        if (Utility.getPreferredLocation(this) != mLocation) {
+//        if (Utility.getPreferredLocation(this) != mLocation) {
+//            ForecastFragment ff = (ForecastFragment)getSupportFragmentManager().findFragmentById(R.id.fragment_forecast);
+//            if (ff != null) {
+//                ff.onLocationChanged();
+//                mLocation = Utility.getPreferredLocation(this);
+//            }
+//        }
+
+        // update the location in our second pane using the fragment manager
+        String location = Utility.getPreferredLocation( this );
+        if (location != null && !location.equals(mLocation)) {
             ForecastFragment ff = (ForecastFragment)getSupportFragmentManager().findFragmentById(R.id.fragment_forecast);
-            if (ff != null) {
+            if ( null != ff ) {
                 ff.onLocationChanged();
-                mLocation = Utility.getPreferredLocation(this);
             }
+            DetailActivityFragment df = (DetailActivityFragment)getSupportFragmentManager().findFragmentByTag(DETAILFRAGMENT_TAG);
+            if ( null != df ) {
+                df.onLocationChanged(location);
+            }
+            mLocation = location;
         }
     }
 
@@ -104,5 +121,30 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onItemSelected(Uri dateUri) {
+        if (mTwoPane) {
+            DetailActivityFragment detailActivityFragment = new DetailActivityFragment();
+            Bundle args = new Bundle();
+            args.putString("dateUri", dateUri.toString());
+            detailActivityFragment.setArguments(args);
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.weather_detail_container, detailActivityFragment, DETAILFRAGMENT_TAG)
+                    .commit();
+        } else {
+            //            Cursor cursor = (Cursor) parent.getItemAtPosition(position);
+//            if (cursor != null) {
+//                String locationSetting = cursor.getString(COL_LOCATION_SETTING);
+//                Intent intent = new Intent(getActivity(), DetailActivity.class)
+//                        .setData(WeatherContract.WeatherEntry.buildWeatherLocationWithDate(locationSetting, cursor.getLong(COL_WEATHER_DATE)));
+//                startActivity(intent);
+//            }
+            Long date = WeatherContract.WeatherEntry.getDateFromUri(dateUri);
+            Intent intent = new Intent(this, DetailActivity.class)
+                    .setData(WeatherContract.WeatherEntry.buildWeatherLocationWithDate(mLocation, date));
+            startActivity(intent);
+        }
     }
 }
