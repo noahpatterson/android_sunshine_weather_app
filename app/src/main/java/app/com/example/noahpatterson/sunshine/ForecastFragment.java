@@ -40,6 +40,8 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     private ForecastAdapter forecastAdapter;
+    private int itemSelectedPosition;
+    private ListView fragmentListView;
 
     // These indices are tied to FORECAST_COLUMNS.  If FORECAST_COLUMNS changes, these
     // must change.
@@ -113,6 +115,10 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         forecastAdapter.swapCursor(data);
+        if (itemSelectedPosition != ListView.INVALID_POSITION) {
+            fragmentListView.smoothScrollToPosition(itemSelectedPosition);
+        }
+
     }
 
     @Override
@@ -151,6 +157,14 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        if (itemSelectedPosition != ListView.INVALID_POSITION) {
+            outState.putInt("itemSelectedPosition", itemSelectedPosition);
+        }
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.forecast_fragment, menu);
     }
@@ -186,7 +200,13 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+                             final Bundle savedInstanceState) {
+
+        // read selectedItemPosition if exists, otherwise select first
+        if (savedInstanceState != null) {
+            int readSelectedItemPosition = savedInstanceState.getInt("itemSelectedPosition", 0);
+            itemSelectedPosition = readSelectedItemPosition;
+        }
 
         // ------ make a new ForecastAdapter -------------------
         forecastAdapter = new ForecastAdapter(getActivity(), null, 0);
@@ -197,12 +217,17 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         final View fragmentView = inflater.inflate(R.layout.fragment_main, container, false);
 
         final ListView forecast_list_vew = (ListView) fragmentView.findViewById(R.id.listview_forecast);
+        fragmentListView = forecast_list_vew;
         forecast_list_vew.setAdapter(forecastAdapter);
 
         // ------ cursor adapter doesn't because getItem from a CursorAdapter doesn't return a string--------
         forecast_list_vew.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // save item selected position
+
+                itemSelectedPosition = position;
+
                 Cursor cursor = (Cursor) parent.getItemAtPosition(position);
                 String locationSetting = Utility.getPreferredLocation(getActivity());
                 if (cursor != null) {
