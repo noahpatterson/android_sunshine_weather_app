@@ -73,8 +73,10 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
         };
 //        Intent intent = getActivity().getIntent();
 //        if (intent == null || intent.getData() == null) {
-
-                return new CursorLoader(getActivity(), mUri, FORECAST_COLUMNS, null, null, null);
+                if (mUri != null) {
+                    return new CursorLoader(getActivity(), mUri, FORECAST_COLUMNS, null, null, null);
+                }
+                return null;
 
         }
 //        Uri detailURI = intent.getData();
@@ -127,8 +129,9 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        if (mUri != null) {
-            mUri = this.getArguments().getParcelable("dateUri");
+        Bundle args = this.getArguments();
+        if (args != null) {
+            mUri = args.getParcelable("dateUri");
         }
 
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
