@@ -71,17 +71,13 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
                 WeatherContract.WeatherEntry.COLUMN_PRESSURE,
                 WeatherContract.WeatherEntry.COLUMN_DEGREES
         };
-//        Intent intent = getActivity().getIntent();
-//        if (intent == null || intent.getData() == null) {
-                if (mUri != null) {
-                    return new CursorLoader(getActivity(), mUri, FORECAST_COLUMNS, null, null, null);
-                }
-                return null;
+
+        if (mUri != null) {
+            return new CursorLoader(getActivity(), mUri, FORECAST_COLUMNS, null, null, null);
+        }
+        return null;
 
         }
-//        Uri detailURI = intent.getData();
-//        return new CursorLoader(getActivity(), detailURI,FORECAST_COLUMNS, null, null, null);
-//    }
 
     public void onLoaderReset(Loader<Cursor> loader) {
 
