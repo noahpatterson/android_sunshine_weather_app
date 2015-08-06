@@ -3,36 +3,47 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fillViewport="true"
     tools:context="app.com.example.noahpatterson.sunshine.DetailActivityFragment"
     >
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp"
-        >
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:paddingTop="16dp"
-            android:paddingBottom="16dp">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textSize="24sp"
-                tools:text="date"
-                android:id="@+id/detail_date"
-                android:layout_gravity="center"/>
+            android:padding="16dp">
 
             <LinearLayout
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="56dp"
                 android:orientation="vertical"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#000"
+                    android:textSize="24sp"
+                    tools:text="Tuesday"
+                    android:minWidth="120dp"
+                    android:id="@+id/detail_date"
+                    android:fontFamily="sans-serif-condensed"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    tools:text="June 24"
+                    android:textColor="#646464"
+                    android:id="@+id/date"
+                    android:fontFamily="sans-serif-condensed"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginLeft="16dp"
                 android:gravity="center_vertical"
 
                 >
@@ -40,72 +51,75 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="32sp"
-                    tools:text="high"
-                    android:id="@+id/detail_high"/>
+                    android:textSize="96sp"
+                    tools:text="24"
+                    android:id="@+id/detail_high"
+                    android:fontFamily="sans-serif-light"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="24sp"
-                    tools:text="low"
-                    android:id="@+id/detail_low"/>
+                    android:textSize="48sp"
+                    tools:text="16"
+                    android:id="@+id/detail_low"
+                    android:layout_marginLeft="8dp"
+                    android:fontFamily="sans-serif-light"
+                    android:layout_marginBottom="16dp"/>
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="22sp"
+                    tools:text="humidity: 71%"
+                    android:id="@+id/detail_humidity"
+                    android:layout_marginBottom="4dp"
+                    android:fontFamily="sans-serif-light"
+                    android:textColor="#000"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="22sp"
+                    tools:text="pressure: 1016 hPa"
+                    android:id="@+id/detail_pressure"
+                    android:layout_marginBottom="4dp"
+                    android:fontFamily="sans-serif-light"
+                    android:textColor="#000"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="22sp"
+                    tools:text="wind: 2km/h NW"
+                    android:id="@+id/detail_wind"
+                    android:fontFamily="sans-serif-light"
+                    android:textColor="#000"/>
             </LinearLayout>
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_marginLeft="16dp"
                 android:orientation="vertical"
-                android:padding="16dp"
                 android:gravity="center_horizontal">
 
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/detail_condition_icon"
+                    tools:src="@drawable/art_clear"
                     />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    tools:text="forecast"
-                    android:textSize="24sp"
-                    android:id="@+id/detail_forecast"/>
+                    tools:text="clear"
+                    android:textSize="22sp"
+                    android:id="@+id/detail_forecast"
+                    android:fontFamily="sans-serif-condensed"/>
 
             </LinearLayout>
 
 
         </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center"
-            >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="24sp"
-                tools:text="humidity"
-                android:id="@+id/detail_humidity"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="24sp"
-                tools:text="wind"
-                android:id="@+id/detail_wind"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="24sp"
-                tools:text="pressure"
-                android:id="@+id/detail_pressure"/>
-        </LinearLayout>
-    </LinearLayout>
-
 
 </ScrollView>
