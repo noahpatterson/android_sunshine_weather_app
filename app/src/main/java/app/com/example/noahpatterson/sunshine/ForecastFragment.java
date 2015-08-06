@@ -21,6 +21,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import app.com.example.noahpatterson.sunshine.data.WeatherContract;
+import app.com.example.noahpatterson.sunshine.service.SunshineService;
 
 /**
  * A placeholder fragment containing a simple view. A modular container
@@ -195,7 +196,9 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
     private void updateWeather() {
         String location = Utility.getPreferredLocation(getActivity());
-        new FetchWeatherTask(getActivity()).execute(location);
+        Intent updateWeatherIntent = new Intent(getActivity(), SunshineService.class);
+        updateWeatherIntent.putExtra("location_to_fetch", location);
+        getActivity().startService(updateWeatherIntent);
     }
 
     @Override
