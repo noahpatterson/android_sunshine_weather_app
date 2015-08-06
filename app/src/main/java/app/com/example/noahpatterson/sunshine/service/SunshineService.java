@@ -1,8 +1,10 @@
 package app.com.example.noahpatterson.sunshine.service;
 
 import android.app.IntentService;
+import android.content.BroadcastReceiver;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -309,6 +311,17 @@ public class SunshineService extends IntentService {
         } catch (JSONException e) {
             Log.e(LOG_TAG, e.getMessage(), e);
             e.printStackTrace();
+        }
+    }
+
+    static public class AlarmReciever extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+        String location = intent.getStringExtra("location_to_fetch");
+        Intent updateWeatherIntent = new Intent(context, SunshineService.class);
+        updateWeatherIntent.putExtra("location_to_fetch", location);
+        context.startService(updateWeatherIntent);
         }
     }
 }
