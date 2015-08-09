@@ -10,6 +10,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import app.com.example.noahpatterson.sunshine.sync.SunshineSyncAdapter;
+
 public class MainActivity extends AppCompatActivity implements ForecastFragment.Callback {
 
     private String mLocation;
@@ -42,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
             mTwoPane = false;
             getSupportActionBar().setElevation(0f);
         }
+        SunshineSyncAdapter.initializeSyncAdapter(this);
     }
 
     @Override
