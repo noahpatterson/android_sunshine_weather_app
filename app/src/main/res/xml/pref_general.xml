@@ -19,6 +19,11 @@
         android:entries="@array/temperature_entries"
         android:entryValues="@array/temperature_values"
         />
-
-
+    <CheckBoxPreference
+        android:title="Daily Weather Notifcations"
+        android:key="notification"
+        android:defaultValue="true"
+        android:summaryOn="enabled"
+        android:summaryOff="disabled"
+        />
 </PreferenceScreen>

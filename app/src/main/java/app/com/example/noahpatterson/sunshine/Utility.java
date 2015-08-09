@@ -16,20 +16,14 @@ package app.com.example.noahpatterson.sunshine;
  * limitations under the License.
  */
 
-import android.content.ContentUris;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.text.format.Time;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import app.com.example.noahpatterson.sunshine.data.WeatherContract;
 
 // abstracts out common methods
 public class Utility {
