@@ -35,6 +35,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Calendar;
 import java.util.Vector;
 
 import app.com.example.noahpatterson.sunshine.DetailActivity;
@@ -256,7 +257,7 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
         //check notification preference
         if (prefs.getBoolean("notification", true)) {
             Log.d("notification", "in notification: " + prefs.getBoolean("notification", true));
-            
+
             String lastNotificationKey = context.getString(R.string.pref_last_notification);
             long lastSync = prefs.getLong(lastNotificationKey, 0);
 
@@ -487,7 +488,16 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
                 ContentValues[] allWeatherContentValues = new ContentValues[cVVector.size()];
                 cVVector.toArray(allWeatherContentValues);
 
+                // delete data older than 1 day
+                Calendar yesterday = Calendar.getInstance();
+                yesterday.add(Calendar.DATE, -1);
+
+                mContext.getContentResolver().delete(WeatherContract.WeatherEntry.CONTENT_URI, WeatherContract.WeatherEntry.COLUMN_DATE + " > ?", new String[] { yesterday.toString()});
+
+                // insert new data
                 inserted = mContext.getContentResolver().bulkInsert(WeatherContract.WeatherEntry.CONTENT_URI, allWeatherContentValues);
+
+                //notification
                 notifyWeather();
 
             }
