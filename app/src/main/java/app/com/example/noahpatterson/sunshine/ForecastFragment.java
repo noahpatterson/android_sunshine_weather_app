@@ -1,14 +1,10 @@
 package app.com.example.noahpatterson.sunshine;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -25,7 +21,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import app.com.example.noahpatterson.sunshine.data.WeatherContract;
-import app.com.example.noahpatterson.sunshine.service.SunshineService;
+import app.com.example.noahpatterson.sunshine.sync.SunshineSyncAdapter;
 
 /**
  * A placeholder fragment containing a simple view. A modular container
@@ -199,24 +195,26 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     private void updateWeather() {
-        Context context = getActivity();
+        SunshineSyncAdapter.syncImmediately(getActivity());
+//        Context context = getActivity();
+//
+//        String location = Utility.getPreferredLocation(context);
+//
+//        // create an alarm manager from the system service
+//        AlarmManager alarmMgr = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+//
+//        // create an explicit intent to call the services alarmReciever
+//        Intent intent = new Intent(context, SunshineService.AlarmReciever.class);
+//
+//        // add our location to the explicit intent
+//        intent.putExtra("location_to_fetch", location);
+//
+//        // wrap the explicit intent in a pending intent
+//        PendingIntent alarmIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+//
+//        // set the alarm passing in the pending intent. When this alarm fires it will fire the explicit intent
+//        alarmMgr.set(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 5 * 1000, alarmIntent);
 
-        String location = Utility.getPreferredLocation(context);
-
-        // create an alarm manager from the system service
-        AlarmManager alarmMgr = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
-
-        // create an explicit intent to call the services alarmReciever
-        Intent intent = new Intent(context, SunshineService.AlarmReciever.class);
-
-        // add our location to the explicit intent
-        intent.putExtra("location_to_fetch", location);
-
-        // wrap the explicit intent in a pending intent
-        PendingIntent alarmIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_ONE_SHOT);
-
-        // set the alarm passing in the pending intent. When this alarm fires it will fire the explicit intent
-        alarmMgr.set(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 5 * 1000, alarmIntent);
     }
 
     @Override
