@@ -182,7 +182,11 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
             SharedPreferences shardPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
             String location = shardPrefs.getString(getString(R.string.location), getString(R.string.default_location_value));
 
-            Uri formatGeo = Uri.parse("geo:0,0?q=" + location);
+            Cursor locationLookup = getActivity().getContentResolver().query(WeatherContract.LocationEntry.CONTENT_URI,new String[] { WeatherContract.LocationEntry.COLUMN_COORD_LAT, WeatherContract.LocationEntry.COLUMN_COORD_LONG }, WeatherContract.LocationEntry.COLUMN_LOCATION_SETTING + " = ? ", new String[] { location }, null);
+
+            locationLookup.moveToFirst();
+
+            Uri formatGeo = Uri.parse("geo:" + locationLookup.getLong(0) + "," + locationLookup.getLong(1));
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setData(formatGeo);
             if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
