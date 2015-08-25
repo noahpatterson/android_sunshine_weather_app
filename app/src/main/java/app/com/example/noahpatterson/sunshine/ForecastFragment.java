@@ -240,6 +240,8 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         final View fragmentView = inflater.inflate(R.layout.fragment_main, container, false);
 
         final ListView forecast_list_vew = (ListView) fragmentView.findViewById(R.id.listview_forecast);
+        View empty_view = fragmentView.findViewById(R.id.empty_view);
+        forecast_list_vew.setEmptyView(empty_view);
         fragmentListView = forecast_list_vew;
         forecast_list_vew.setAdapter(forecastAdapter);
 

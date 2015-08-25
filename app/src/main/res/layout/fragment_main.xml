@@ -9,9 +9,19 @@
     tools:context=".ForecastFragment">
 
     <ListView
+        android:id="@+id/listview_forecast"
+        style="@style/listSelect"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+
+    <TextView
+        android:id="@+id/empty_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/listview_forecast"
-        style="@style/listSelect">
-    </ListView>
+        android:text="@string/no_data">
+
+    </TextView>
+
+
 </FrameLayout>
