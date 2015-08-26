@@ -64,4 +64,5 @@
 
     <!-- shown when no data-->
     <string name="no_data">No weather information available.</string>
+    <string name="no_connection">Please check your internet connection</string>
 </resources>

@@ -1,8 +1,10 @@
 package app.com.example.noahpatterson.sunshine;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -19,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import app.com.example.noahpatterson.sunshine.data.WeatherContract;
 import app.com.example.noahpatterson.sunshine.sync.SunshineSyncAdapter;
@@ -116,8 +119,22 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         forecastAdapter.swapCursor(data);
+
+        // scroll to position if if exists
         if (itemSelectedPosition != ListView.INVALID_POSITION) {
             fragmentListView.smoothScrollToPosition(itemSelectedPosition);
+        }
+
+        // check for data
+        ConnectivityManager cm = (ConnectivityManager) getActivity().getBaseContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (data.getCount() == 0) {
+            int message = R.string.no_data;
+            View emptyView = fragmentListView.getEmptyView();
+            TextView emptyTextView = (TextView) emptyView.findViewById(R.id.empty_view);
+            if (cm.getActiveNetworkInfo() == null || !cm.getActiveNetworkInfo().isConnectedOrConnecting()) {
+                message = R.string.no_connection;
+            }
+            emptyTextView.setText(message);
         }
 
     }
