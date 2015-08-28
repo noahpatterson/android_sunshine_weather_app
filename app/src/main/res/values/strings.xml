@@ -66,4 +66,6 @@
     <string name="no_data">No weather information available.</string>
     <string name="no_connection">Please check your internet connection</string>
     <string name="pref_location_status_key">sync_location_status</string>
+    <string name="no_server">Sorry it appears that the weather service is down</string>
+    <string name="bad_url">Opps, looks like we\'ve made a mistake, please notify us.</string>
 </resources>

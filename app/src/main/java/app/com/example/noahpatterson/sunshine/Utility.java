@@ -25,11 +25,19 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import app.com.example.noahpatterson.sunshine.sync.SunshineSyncAdapter;
+
 // abstracts out common methods
 public class Utility {
     public static String getPreferredLocation(Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         return prefs.getString(context.getString(R.string.location),context.getString(R.string.default_location_value));
+    }
+
+    @SuppressWarnings("ResourceType")
+    public static @SunshineSyncAdapter.LocationStatus int getLocationSyncStatus(Context context) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getInt(context.getString(R.string.pref_location_status_key), SunshineSyncAdapter.LOCATION_STATUS_UNKNOWN);
     }
 
     public static boolean isMetric(Context context) {

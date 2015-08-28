@@ -115,7 +115,7 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
             // Possible parameters are avaiable at OWM's forecast API page, at
             // http://openweathermap.org/API#forecast
             final String FORECAST_BASE_URL =
-//                    "http://www.google.com/PING?";
+//                    "http://www.google.com/?";
                     "http://api.openweathermap.org/data/2.5/forecast/daily?";
             final String QUERY_PARAM = "q";
             final String FORMAT_PARAM = "mode";

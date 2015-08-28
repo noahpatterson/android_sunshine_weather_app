@@ -29,7 +29,7 @@ import app.com.example.noahpatterson.sunshine.sync.SunshineSyncAdapter;
 /**
  * A placeholder fragment containing a simple view. A modular container
  */
-public class ForecastFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class ForecastFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, SharedPreferences.OnSharedPreferenceChangeListener {
 
     /**
      * A callback interface that all activities containing this fragment must
@@ -124,19 +124,38 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         if (itemSelectedPosition != ListView.INVALID_POSITION) {
             fragmentListView.smoothScrollToPosition(itemSelectedPosition);
         }
+        updateEmptyView();
+    }
 
+    private void updateEmptyView() {
         // check for data
         ConnectivityManager cm = (ConnectivityManager) getActivity().getBaseContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (data.getCount() == 0) {
+        if (forecastAdapter.getCount() == 0) {
             int message = R.string.no_data;
             View emptyView = fragmentListView.getEmptyView();
             TextView emptyTextView = (TextView) emptyView.findViewById(R.id.empty_view);
-            if (cm.getActiveNetworkInfo() == null || !cm.getActiveNetworkInfo().isConnectedOrConnecting()) {
-                message = R.string.no_connection;
+            @SunshineSyncAdapter.LocationStatus int location_sync_status = Utility.getLocationSyncStatus(getActivity());
+//            if (cm.getActiveNetworkInfo() == null || !cm.getActiveNetworkInfo().isConnectedOrConnecting()) {
+//                message = R.string.no_connection;
+//            } else if (location_sync_status == SunshineSyncAdapter.LOCATION_STATUS_SERVER_DOWN) {
+//                message = R.string.no_server;
+//            } else if (location_sync_status == SunshineSyncAdapter.LOCATION_STATUS_SERVER_INVALID) {
+//                message = R.string.bad_url;
+//            }
+            switch (location_sync_status) {
+                case SunshineSyncAdapter.LOCATION_STATUS_SERVER_DOWN:
+                    message = R.string.no_server;
+                    break;
+                case SunshineSyncAdapter.LOCATION_STATUS_SERVER_INVALID:
+                    message = R.string.bad_url;
+                    break;
+                default:
+                    if (cm.getActiveNetworkInfo() == null || !cm.getActiveNetworkInfo().isConnectedOrConnecting()) {
+                        message = R.string.no_connection;
+                    }
             }
             emptyTextView.setText(message);
         }
-
     }
 
     @Override
@@ -151,15 +170,26 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     public void onResume() {
         super.onResume();
         Log.d("lifecycle", "fragment onResume");
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        pref.registerOnSharedPreferenceChangeListener(this);
 //        getLoaderManager().restartLoader(0, null, this);
 
 
     }
 
     @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key == getActivity().getString(R.string.pref_location_status_key)) {
+            updateEmptyView();
+        }
+    }
+
+    @Override
     public void onPause() {
         super.onPause();
         Log.d("lifecycle", "fragment onPause");
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        pref.unregisterOnSharedPreferenceChangeListener(this);
     }
 
     @Override
