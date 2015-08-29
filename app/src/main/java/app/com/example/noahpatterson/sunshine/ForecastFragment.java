@@ -149,6 +149,9 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
                 case SunshineSyncAdapter.LOCATION_STATUS_SERVER_INVALID:
                     message = R.string.bad_url;
                     break;
+                case SunshineSyncAdapter.LOCATION_UNKNOWN:
+                    message = R.string.unknown_location;
+                    break;
                 default:
                     if (cm.getActiveNetworkInfo() == null || !cm.getActiveNetworkInfo().isConnectedOrConnecting()) {
                         message = R.string.no_connection;

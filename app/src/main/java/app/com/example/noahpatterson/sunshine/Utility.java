@@ -35,6 +35,16 @@ public class Utility {
     }
 
     @SuppressWarnings("ResourceType")
+    public static @SunshineSyncAdapter.LocationStatus void resetLocationStatus(Context context) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putInt(context.getString(R.string.pref_location_status_key), SunshineSyncAdapter.LOCATION_UNKNOWN);
+
+        //apply is used because the function is called from the UI thread
+        editor.apply();
+    }
+
+    @SuppressWarnings("ResourceType")
     public static @SunshineSyncAdapter.LocationStatus int getLocationSyncStatus(Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         return prefs.getInt(context.getString(R.string.pref_location_status_key), SunshineSyncAdapter.LOCATION_STATUS_UNKNOWN);
