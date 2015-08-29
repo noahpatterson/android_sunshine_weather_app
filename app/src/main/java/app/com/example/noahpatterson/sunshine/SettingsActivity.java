@@ -1,6 +1,5 @@
 package app.com.example.noahpatterson.sunshine;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.ListPreference;
@@ -53,7 +52,7 @@ public class SettingsActivity extends PreferenceActivity
     @Override
     public boolean onPreferenceChange(Preference preference, Object value) {
         String stringValue = value.toString();
-        Context context = preference.getContext();
+//        Context context = preference.getContext();
 
         if (preference instanceof ListPreference) {
             // For list preferences, look up the correct display value in
@@ -63,8 +62,23 @@ public class SettingsActivity extends PreferenceActivity
             if (prefIndex >= 0) {
                 preference.setSummary(listPreference.getEntries()[prefIndex]);
             }
-        } else {
+        } else if (preference.getKey().equals(getString(R.string.location))) {
             // For other preferences, set the summary to the value's simple string representation.
+            @SunshineSyncAdapter.LocationStatus int locationStatus = Utility.getLocationSyncStatus(this);
+            switch (locationStatus) {
+                case SunshineSyncAdapter.LOCATION_STATUS_OK:
+                    preference.setSummary(stringValue);
+                    break;
+                case SunshineSyncAdapter.LOCATION_STATUS_UNKNOWN:
+                    preference.setSummary(getString(R.string.pref_location_unknown_description, stringValue));
+                    break;
+                case SunshineSyncAdapter.LOCATION_UNKNOWN:
+                    preference.setSummary(getString(R.string.pref_location_error_description, stringValue));
+                    break;
+                default:
+                    preference.setSummary(stringValue);
+            }
+        } else {
             preference.setSummary(stringValue);
         }
         return true;

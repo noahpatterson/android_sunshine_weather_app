@@ -550,7 +550,7 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
                     Log.d(LOG_TAG, "FetchWeatherTask Complete. " + inserted + " Inserted: " + cVVector.toString());
 
                 }
-            
+
 //
 //        } catch (JSONException e) {
 //            Log.e(LOG_TAG, e.getMessage(), e);
