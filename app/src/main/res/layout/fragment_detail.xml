@@ -79,6 +79,7 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/detail_condition_icon"
                     tools:src="@drawable/art_clear"
+                    android:adjustViewBounds="true"
                    />
 
                 <TextView

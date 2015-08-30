@@ -15,7 +15,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SyncRequest;
 import android.content.SyncResult;
+import android.content.res.Resources;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -25,6 +28,8 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.text.format.Time;
 import android.util.Log;
+
+import com.bumptech.glide.Glide;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -40,6 +45,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Calendar;
 import java.util.Vector;
+import java.util.concurrent.ExecutionException;
 
 import app.com.example.noahpatterson.sunshine.DetailActivity;
 import app.com.example.noahpatterson.sunshine.R;
@@ -300,7 +306,6 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
                     double low = cursor.getDouble(INDEX_MIN_TEMP);
                     String desc = cursor.getString(INDEX_SHORT_DESC);
 
-                    int iconId = Utility.getIconResourceForWeatherCondition(weatherId);
                     String title = context.getString(R.string.app_name);
 
                     // Define the text of the forecast.
@@ -309,9 +314,38 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
                             Utility.formatTemperature(context, high, Utility.isMetric(context)),
                             Utility.formatTemperature(context, low, Utility.isMetric(context)));
 
+                    int iconId = Utility.getIconResourceForWeatherCondition(weatherId);
+                    Resources resources = context.getResources();
+                    int artResourceId = Utility.getArtResourceForWeatherCondition(weatherId);
+                    String artUrl = Utility.getArtUrlForWeatherCondition(context, weatherId);
+
+                    //get largeicon
+                    int largeIconWidth = Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB
+                            ? resources.getDimensionPixelSize(android.R.dimen.notification_large_icon_width)
+                            : resources.getDimensionPixelSize(R.dimen.notification_large_icon_default);
+                    int largeIconHeight = Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB
+                            ? resources.getDimensionPixelSize(android.R.dimen.notification_large_icon_height)
+                            : resources.getDimensionPixelSize(R.dimen.notification_large_icon_default);
+
+                    Bitmap largeIcon;
+                    try {
+                        largeIcon = Glide.with(context)
+                                .load(artUrl)
+                                .asBitmap()
+                                .error(artResourceId)
+                                .fitCenter()
+                                .into(largeIconWidth, largeIconHeight)
+                                .get();
+                    } catch (InterruptedException | ExecutionException e) {
+                        largeIcon = BitmapFactory.decodeResource(resources, artResourceId);
+                        Log.d("syncAdapter", "error retrieving image");
+                    }
+
                     //build your notification here.
                     NotificationCompat.Builder notifiyBuilder = new NotificationCompat.Builder(context)
+                            .setColor(resources.getColor(R.color.sunshine_light_blue))
                             .setSmallIcon(iconId)
+                            .setLargeIcon(largeIcon)
                             .setContentTitle(title)
                             .setContentText(contentText);
 

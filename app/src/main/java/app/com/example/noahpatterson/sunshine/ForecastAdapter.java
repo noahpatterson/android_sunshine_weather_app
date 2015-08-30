@@ -1,15 +1,17 @@
 package app.com.example.noahpatterson.sunshine;
 
-        import android.content.Context;
+import android.content.Context;
 import android.database.Cursor;
 import android.support.v4.widget.CursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-        import android.widget.ImageView;
-        import android.widget.TextView;
+import android.widget.ImageView;
+import android.widget.TextView;
 
-        import java.util.HashMap;
+import com.bumptech.glide.Glide;
+
+import java.util.HashMap;
 
 /**
  * {@link ForecastAdapter} exposes a list of weather forecasts
@@ -50,10 +52,6 @@ public class ForecastAdapter extends CursorAdapter {
         string.
      */
     private String convertCursorRowToUXFormat(Cursor cursor) {
-
-
-
-
         String highAndLow = formatHighLows(
                 cursor.getDouble(ForecastFragment.COL_WEATHER_MAX_TEMP),
                 cursor.getDouble(ForecastFragment.COL_WEATHER_MIN_TEMP));
@@ -121,10 +119,15 @@ public class ForecastAdapter extends CursorAdapter {
         viewHolder.lowTemp.setText(Utility.formatTemperature(context, cursor.getDouble(ForecastFragment.COL_WEATHER_MIN_TEMP), Utility.isMetric(context)));
         viewHolder.lowTemp.setContentDescription(context.getString(R.string.a11y_low_temp, Utility.formatTemperature(context, cursor.getDouble(ForecastFragment.COL_WEATHER_MIN_TEMP), Utility.isMetric(context))));
 
-        if (getItemViewType(cursor.getPosition()) == 0 ) {
-            viewHolder.conditionImage.setImageResource(Utility.getIconResourceForWeatherCondition(cursor.getInt(ForecastFragment.COL_WEATHER_CONDITION_ID)));
-        } else {
-            viewHolder.conditionImage.setImageResource(Utility.getArtResourceForWeatherCondition(cursor.getInt(ForecastFragment.COL_WEATHER_CONDITION_ID)));
-        }
+//        if (getItemViewType(cursor.getPosition()) == 0 ) {
+//            viewHolder.conditionImage.setImageResource(Utility.getIconResourceForWeatherCondition(cursor.getInt(ForecastFragment.COL_WEATHER_CONDITION_ID)));
+//        } else {
+//            viewHolder.conditionImage.setImageResource(Utility.getArtResourceForWeatherCondition(cursor.getInt(ForecastFragment.COL_WEATHER_CONDITION_ID)));
+//        }
+        Glide.with(context)
+                .load(Utility.getArtUrlForWeatherCondition(context, cursor.getInt(ForecastFragment.COL_WEATHER_CONDITION_ID)))
+                .error(Utility.getIconResourceForWeatherCondition(cursor.getInt(ForecastFragment.COL_WEATHER_CONDITION_ID)))
+                .crossFade()
+                .into(viewHolder.conditionImage);
     }
 }

@@ -10,6 +10,7 @@
         android:title="Share"
         app:showAsAction="always"
         app:actionProviderClass=
-            "android.support.v7.widget.ShareActionProvider" />
+            "android.support.v7.widget.ShareActionProvider"
+        />
 
 </menu>
