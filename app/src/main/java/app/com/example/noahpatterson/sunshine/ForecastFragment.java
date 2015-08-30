@@ -1,10 +1,8 @@
 package app.com.example.noahpatterson.sunshine;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -75,10 +73,8 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
         getLoaderManager().initLoader(0, null, this);
-
+        super.onActivityCreated(savedInstanceState);
     }
 
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
@@ -129,19 +125,11 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
     private void updateEmptyView() {
         // check for data
-        ConnectivityManager cm = (ConnectivityManager) getActivity().getBaseContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         if (forecastAdapter.getCount() == 0) {
             int message = R.string.no_data;
             View emptyView = fragmentListView.getEmptyView();
             TextView emptyTextView = (TextView) emptyView.findViewById(R.id.empty_view);
             @SunshineSyncAdapter.LocationStatus int location_sync_status = Utility.getLocationSyncStatus(getActivity());
-//            if (cm.getActiveNetworkInfo() == null || !cm.getActiveNetworkInfo().isConnectedOrConnecting()) {
-//                message = R.string.no_connection;
-//            } else if (location_sync_status == SunshineSyncAdapter.LOCATION_STATUS_SERVER_DOWN) {
-//                message = R.string.no_server;
-//            } else if (location_sync_status == SunshineSyncAdapter.LOCATION_STATUS_SERVER_INVALID) {
-//                message = R.string.bad_url;
-//            }
             switch (location_sync_status) {
                 case SunshineSyncAdapter.LOCATION_STATUS_SERVER_DOWN:
                     message = R.string.no_server;
@@ -149,11 +137,11 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
                 case SunshineSyncAdapter.LOCATION_STATUS_SERVER_INVALID:
                     message = R.string.bad_url;
                     break;
-                case SunshineSyncAdapter.LOCATION_UNKNOWN:
+                case SunshineSyncAdapter.LOCATION_STATUS_INVALID:
                     message = R.string.unknown_location;
                     break;
                 default:
-                    if (cm.getActiveNetworkInfo() == null || !cm.getActiveNetworkInfo().isConnectedOrConnecting()) {
+                    if (!Utility.isNetworkAvailable(getActivity())) {
                         message = R.string.no_connection;
                     }
             }
@@ -182,7 +170,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (key == getActivity().getString(R.string.pref_location_status_key)) {
+        if (key.equals(getString(R.string.pref_location_status_key))) {
             updateEmptyView();
         }
     }

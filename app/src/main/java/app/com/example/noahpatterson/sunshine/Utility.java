@@ -18,6 +18,8 @@ package app.com.example.noahpatterson.sunshine;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
 import android.text.format.Time;
 
@@ -34,11 +36,10 @@ public class Utility {
         return prefs.getString(context.getString(R.string.location),context.getString(R.string.default_location_value));
     }
 
-    @SuppressWarnings("ResourceType")
-    public static @SunshineSyncAdapter.LocationStatus void resetLocationStatus(Context context) {
+    public static void resetLocationStatus(Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = prefs.edit();
-        editor.putInt(context.getString(R.string.pref_location_status_key), SunshineSyncAdapter.LOCATION_UNKNOWN);
+        editor.putInt(context.getString(R.string.pref_location_status_key), SunshineSyncAdapter.LOCATION_STATUS_UNKNOWN);
 
         //apply is used because the function is called from the UI thread
         editor.apply();
@@ -48,6 +49,15 @@ public class Utility {
     public static @SunshineSyncAdapter.LocationStatus int getLocationSyncStatus(Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         return prefs.getInt(context.getString(R.string.pref_location_status_key), SunshineSyncAdapter.LOCATION_STATUS_UNKNOWN);
+    }
+
+    static public boolean isNetworkAvailable(Context c) {
+        ConnectivityManager cm =
+                (ConnectivityManager)c.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
     }
 
     public static boolean isMetric(Context context) {

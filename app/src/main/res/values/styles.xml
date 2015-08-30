@@ -27,4 +27,9 @@
         for two-pane layout -->
     </style>
 
+    <!-- Change preference error text color-->
+    <style name="PreferenceErrorText">
+        <item name="colorAccent">@color/error</item>
+    </style>
+
 </resources>
