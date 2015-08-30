@@ -113,10 +113,13 @@ public class ForecastAdapter extends CursorAdapter {
         viewHolder.date.setText(Utility.getFriendlyDayString(context, cursor.getLong(ForecastFragment.COL_WEATHER_DATE)));
 
         viewHolder.forecast.setText(cursor.getString(ForecastFragment.COL_WEATHER_DESC));
+        viewHolder.forecast.setContentDescription(context.getString(R.string.a11y_forecast, cursor.getString(ForecastFragment.COL_WEATHER_DESC)));
 
         viewHolder.highTemp.setText(Utility.formatTemperature(context, cursor.getDouble(ForecastFragment.COL_WEATHER_MAX_TEMP), Utility.isMetric(context)));
+        viewHolder.highTemp.setContentDescription(context.getString(R.string.a11y_high_temp, Utility.formatTemperature(context, cursor.getDouble(ForecastFragment.COL_WEATHER_MAX_TEMP), Utility.isMetric(context))));
 
         viewHolder.lowTemp.setText(Utility.formatTemperature(context, cursor.getDouble(ForecastFragment.COL_WEATHER_MIN_TEMP), Utility.isMetric(context)));
+        viewHolder.lowTemp.setContentDescription(context.getString(R.string.a11y_low_temp, Utility.formatTemperature(context, cursor.getDouble(ForecastFragment.COL_WEATHER_MIN_TEMP), Utility.isMetric(context))));
 
         if (getItemViewType(cursor.getPosition()) == 0 ) {
             viewHolder.conditionImage.setImageResource(Utility.getIconResourceForWeatherCondition(cursor.getInt(ForecastFragment.COL_WEATHER_CONDITION_ID)));

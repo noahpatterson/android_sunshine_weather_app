@@ -93,13 +93,27 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
         mForecastString = formattedWeather;
 
         mtextDate.setText(Utility.getFriendlyDayString(getActivity(),data.getLong(ForecastFragment.COL_WEATHER_DATE)));
+
         mtextHigh.setText(highFormatted);
+        mtextHigh.setContentDescription(getString(R.string.a11y_high_temp, highFormatted));
+
         mtextLow.setText(lowFormatted);
+        mtextLow.setContentDescription(getString(R.string.a11y_low_temp, lowFormatted));
+
         mtextHumidity.setText(getActivity().getString(R.string.format_humidity, data.getFloat(ForecastFragment.COL_WIND)));
+        mtextHumidity.setContentDescription(mtextHumidity.getText());
+
         mtextWind.setText(Utility.getFormattedWind(getActivity(), data.getInt(ForecastFragment.COL_WIND), data.getInt(ForecastFragment.COL_WIND_DEGREES)));
+        mtextWind.setContentDescription(mtextWind.getText());
+
         mtextPressure.setText(getActivity().getString(R.string.format_pressure, data.getFloat(ForecastFragment.COL_PRESSURE)));
+        mtextPressure.setContentDescription(mtextPressure.getText());
+
         mtextForecast.setText(data.getString(ForecastFragment.COL_WEATHER_DESC));
+        mtextForecast.setContentDescription(getString(R.string.a11y_forecast, data.getString(ForecastFragment.COL_WEATHER_DESC)));
+
         mConditionIcon.setImageResource(Utility.getArtResourceForWeatherCondition(data.getInt(ForecastFragment.COL_WEATHER_CONDITION_ID)));
+        mConditionIcon.setContentDescription(getString(R.string.a11y_forecast_icon, data.getString(ForecastFragment.COL_WEATHER_DESC)));
 
 //        text.setText(formattedWeather);
         if (mShareActionProvider != null) {
