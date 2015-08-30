@@ -33,6 +33,7 @@ public class SettingsActivity extends PreferenceActivity
         // updated when the preference changes.
         bindPreferenceSummaryToValue(findPreference(getString(R.string.location)));
         bindPreferenceSummaryToValue(findPreference("Temperature Units"));
+        bindPreferenceSummaryToValue(findPreference(getString(R.string.icon_pack_key)));
     }
 
     // Registers a shared preference change listener that gets notified when preferences change

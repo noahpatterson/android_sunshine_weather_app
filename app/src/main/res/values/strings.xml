@@ -84,4 +84,22 @@
 
     <!-- base url for fetching weather data -->
     <string name="format_art_url" translatable="false">https://raw.githubusercontent.com/udacity/Sunshine-Version-2/sunshine_master/app/src/main/res/drawable-xxhdpi/art_<xliff:g id="description">%s</xliff:g>.png</string>
+
+    <!-- icon pack url-->
+    <string name="icon_pack_url" translatable="false">https://raw.githubusercontent.com/udacity/sunshine_icons/master/Archive/<xliff:g id="pack">%s</xliff:g>/art_<xliff:g id="description">%s</xliff:g>.png</string>
+    <!--udacity/sunshine_icons/blob/master/Archive/Colored/3.png-->
+
+    <!-- add preference for icon packs-->
+    <string name="icon_pack_key">Icon Packs</string>
+    <string name="icon_pack_default">default</string>
+    <string-array name="icon_pack_entries">
+        <item>default</item>
+        <item>colored</item>
+        <item>mono</item>
+    </string-array>
+    <string-array name="icon_pack_values">
+        <item>default</item>
+        <item>colored</item>
+        <item>mono</item>
+    </string-array>
 </resources>

@@ -19,6 +19,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
 import app.com.example.noahpatterson.sunshine.data.WeatherContract;
 
 /**
@@ -112,7 +114,12 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
         mtextForecast.setText(data.getString(ForecastFragment.COL_WEATHER_DESC));
         mtextForecast.setContentDescription(getString(R.string.a11y_forecast, data.getString(ForecastFragment.COL_WEATHER_DESC)));
 
-        mConditionIcon.setImageResource(Utility.getArtResourceForWeatherCondition(data.getInt(ForecastFragment.COL_WEATHER_CONDITION_ID)));
+//        mConditionIcon.setImageResource(Utility.getArtResourceForWeatherCondition(data.getInt(ForecastFragment.COL_WEATHER_CONDITION_ID)));
+        Glide.with(getActivity())
+                .load(Utility.getArtUrlForWeatherCondition(getActivity(), data.getInt(ForecastFragment.COL_WEATHER_CONDITION_ID)))
+                .error(Utility.getIconResourceForWeatherCondition(data.getInt(ForecastFragment.COL_WEATHER_CONDITION_ID)))
+                .crossFade()
+                .into(mConditionIcon);
         mConditionIcon.setContentDescription(getString(R.string.a11y_forecast_icon, data.getString(ForecastFragment.COL_WEATHER_DESC)));
 
 //        text.setText(formattedWeather);

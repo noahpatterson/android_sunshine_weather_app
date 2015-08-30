@@ -28,4 +28,11 @@
         android:summaryOn="enabled"
         android:summaryOff="disabled"
         />
+    <ListPreference
+        android:title="@string/icon_pack_key"
+        android:key="@string/icon_pack_key"
+        android:defaultValue="@string/icon_pack_default"
+        android:entries="@array/icon_pack_entries"
+        android:entryValues="@array/icon_pack_values"
+        />
 </PreferenceScreen>
