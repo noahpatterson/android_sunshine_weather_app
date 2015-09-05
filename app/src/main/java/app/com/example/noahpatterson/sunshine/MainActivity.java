@@ -1,8 +1,12 @@
 package app.com.example.noahpatterson.sunshine;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +15,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.facebook.stetho.Stetho;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
+
+import java.io.IOException;
 
 import app.com.example.noahpatterson.sunshine.sync.SunshineSyncAdapter;
 
@@ -19,6 +28,15 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
     private String mLocation;
     private Boolean mTwoPane;
     private static final String DETAILFRAGMENT_TAG = "DFTAG";
+    private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+    private static final String PROPERTY_APP_VERSION = "appVersion";
+    private GoogleCloudMessaging mGcm;
+
+    // id from GCM web console
+    public static final String PROJECT_NUMBER = "193030073480";
+
+    public static final String PROPERTY_REG_ID = "registration_id";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +79,84 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
             getSupportActionBar().setElevation(0f);
         }
         SunshineSyncAdapter.initializeSyncAdapter(this);
+
+        if (!checkPlayService()) {
+            mGcm = GoogleCloudMessaging.getInstance(this);
+            String regID = getRegistrationId(getApplicationContext());
+
+            if (regID.isEmpty()) {
+                registerGCMInBackground(getApplicationContext());
+            }
+
+        } else {
+            Log.i("main activity", "No valid play service apk. Weather alerts will be disabled");
+            storeGCMRegistrationId(getApplicationContext(), null);
+        }
+    }
+
+    private SharedPreferences getGCMPreferences() {
+        // Sunshine persists the registration ID in shared preferences, but
+        // how you store the registration ID in your app is up to you. Just make sure
+        // that it is private!
+        return getSharedPreferences(MainActivity.class.getSimpleName(), Context.MODE_PRIVATE);
+    }
+
+    private void storeGCMRegistrationId(Context applicationContext, String regId) {
+        int appVersion = getAppVersion(applicationContext);
+        SharedPreferences sharedPreferences = getGCMPreferences();
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(PROPERTY_REG_ID, regId);
+        editor.putInt(PROPERTY_APP_VERSION, appVersion);
+        editor.commit();
+    }
+
+    private void registerGCMInBackground(final Context applicationContext) {
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                String msg = "";
+                try {
+                    if (mGcm == null) {
+                        mGcm = GoogleCloudMessaging.getInstance(applicationContext);
+                    }
+                    String regId = mGcm.register(PROJECT_NUMBER);
+                    msg = "Device registered. Registration ID = " + regId;
+                    // persist the ID no need to register again
+                    storeGCMRegistrationId(applicationContext, regId);
+                } catch (IOException e) {
+                    msg = "Error: " + e.getMessage();
+                }
+                return null;
+            }
+        }.execute(null, null, null);
+    }
+
+    private String getRegistrationId(Context applicationContext) {
+        SharedPreferences sharedPreferences = getGCMPreferences();
+        String regId = sharedPreferences.getString(PROPERTY_REG_ID, "");
+        if (regId.isEmpty()) {
+            Log.i("main activity", "GCM Registration not found.");
+            return "";
+        }
+
+        int registeredVersion = sharedPreferences.getInt(PROPERTY_APP_VERSION, Integer.MIN_VALUE);
+        int currentVersion    = getAppVersion(applicationContext);
+        if (registeredVersion != currentVersion) {
+            Log.i("main activity", "app version changed.");
+            return "";
+        }
+        return regId;
+    }
+
+    private int getAppVersion(Context context) {
+        try {
+            PackageInfo packageInfo = context.getPackageManager()
+                    .getPackageInfo(context.getPackageName(), 0);
+            return packageInfo.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            // Should never happen. WHAT DID YOU DO?!?!
+            throw new RuntimeException("Could not get package name: " + e);
+        }
     }
 
     @Override
@@ -73,6 +169,10 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
     public void onResume() {
         super.onResume();
         Log.d("lifecycle", "activity onResume");
+
+        if (!checkPlayService()) {
+
+        }
         // update the location in our second pane using the fragment manager
         String location = Utility.getPreferredLocation( this );
         if (location != null && !location.equals(mLocation)) {
@@ -155,5 +255,18 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
                     .setData(dateUri);
             startActivity(intent);
         }
+    }
+
+    private boolean checkPlayService() {
+        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+                GooglePlayServicesUtil.getErrorDialog(resultCode,this,PLAY_SERVICES_RESOLUTION_REQUEST).show();
+            } else {
+                Log.i("Main Activity", "This device is not supported");
+            }
+            return false;
+        }
+        return true;
     }
 }
