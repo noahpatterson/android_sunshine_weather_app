@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
         }
         SunshineSyncAdapter.initializeSyncAdapter(this);
 
-        if (!checkPlayService()) {
+        if (checkPlayService()) {
             mGcm = GoogleCloudMessaging.getInstance(this);
             String regID = getRegistrationId(getApplicationContext());
 
@@ -106,8 +106,9 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
         SharedPreferences sharedPreferences = getGCMPreferences();
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(PROPERTY_REG_ID, regId);
+        Log.d("main activity", "gcm registration id: " + regId);
         editor.putInt(PROPERTY_APP_VERSION, appVersion);
-        editor.commit();
+        editor.apply();
     }
 
     private void registerGCMInBackground(final Context applicationContext) {
@@ -121,6 +122,7 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
                     }
                     String regId = mGcm.register(PROJECT_NUMBER);
                     msg = "Device registered. Registration ID = " + regId;
+                    Log.d("main acivity", msg);
                     // persist the ID no need to register again
                     storeGCMRegistrationId(applicationContext, regId);
                 } catch (IOException e) {
