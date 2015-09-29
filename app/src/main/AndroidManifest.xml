@@ -7,13 +7,13 @@
     <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
     <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    // google cloud messaging permissions
+    <!-- google cloud messaging permissions-->
+    <!-- Permissions required for Google Cloud Messaging -->
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <permission
         android:name="app.com.example.noahpatterson.sunshine.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
-
     <uses-permission android:name="app.com.example.noahpatterson.sunshine.permission.C2D_MESSAGE" />
-    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
 
     <application
         android:allowBackup="true"
@@ -83,19 +83,18 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="app.com.example.noahpatterson.sunshine.MainActivity" />
         </activity>
-        // Google Cloud Messaging Receiver
-         <receiver android:name=".GCMBroadcastReceiver"
-         android:permission="com.google.android.c2dm.permission.SEND">
-             <intent-filter>
-                <action android:name="com.google.android.c2dm.permission.RECEIVER" />
-                <category android:name="app.com.example.noahpatterson.sunshine" />
-             </intent-filter>
-         </receiver>
-        <!--<receiver-->
-            <!--android:name=".GCMBroadcastReceiver"-->
-            <!--android:enabled="true"-->
-            <!--android:exported="true" >-->
-        <!--</receiver>-->
+        <!-- GCM receiver -->
+        <!-- GCM receiver -->
+        <receiver
+            android:name=".GCMBroadcastReceiver"
+            android:permission="com.google.android.c2dm.permission.SEND" >
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <category android:name="com.example.android.sunshine.app" />
+            </intent-filter>
+        </receiver>
+
+
     </application>
 
 </manifest>

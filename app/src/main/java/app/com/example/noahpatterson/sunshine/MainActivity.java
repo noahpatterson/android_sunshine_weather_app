@@ -1,5 +1,6 @@
 package app.com.example.noahpatterson.sunshine;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -80,21 +81,29 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
         }
         SunshineSyncAdapter.initializeSyncAdapter(this);
 
+        // If Google Play Services is not available, some features, such as GCM-powered weather
+        // alerts, will not be available.
         if (checkPlayService()) {
             mGcm = GoogleCloudMessaging.getInstance(this);
-            String regID = getRegistrationId(getApplicationContext());
+            String regId = getRegistrationId(this);
 
-            if (regID.isEmpty()) {
-                registerGCMInBackground(getApplicationContext());
+            if (PROJECT_NUMBER.equals("Your Project Number")) {
+                new AlertDialog.Builder(this)
+                        .setTitle("Needs Project Number")
+                        .setMessage("GCM will not function in Sunshine until you set the Project Number to the one from the Google Developers Console.")
+                        .setPositiveButton(android.R.string.ok, null)
+                        .create().show();
+            } else if (regId.isEmpty()) {
+                registerGCMInBackground(this);
             }
-
         } else {
-            Log.i("main activity", "No valid play service apk. Weather alerts will be disabled");
-            storeGCMRegistrationId(getApplicationContext(), null);
+            Log.i("main activity", "No valid Google Play Services APK. Weather alerts will be disabled.");
+            // Store regID as null
+            storeGCMRegistrationId(this, null);
         }
     }
 
-    private SharedPreferences getGCMPreferences() {
+    private SharedPreferences getGCMPreferences(Context context) {
         // Sunshine persists the registration ID in shared preferences, but
         // how you store the registration ID in your app is up to you. Just make sure
         // that it is private!
@@ -102,13 +111,13 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
     }
 
     private void storeGCMRegistrationId(Context applicationContext, String regId) {
+        final SharedPreferences prefs = getGCMPreferences(applicationContext);
         int appVersion = getAppVersion(applicationContext);
-        SharedPreferences sharedPreferences = getGCMPreferences();
-        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Log.i("main activity", "Saving regId on app version " + appVersion);
+        SharedPreferences.Editor editor = prefs.edit();
         editor.putString(PROPERTY_REG_ID, regId);
-        Log.d("main activity", "gcm registration id: " + regId);
         editor.putInt(PROPERTY_APP_VERSION, appVersion);
-        editor.apply();
+        editor.commit();
     }
 
     private void registerGCMInBackground(final Context applicationContext) {
@@ -121,12 +130,24 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
                         mGcm = GoogleCloudMessaging.getInstance(applicationContext);
                     }
                     String regId = mGcm.register(PROJECT_NUMBER);
-                    msg = "Device registered. Registration ID = " + regId;
-                    Log.d("main acivity", msg);
-                    // persist the ID no need to register again
+                    msg = "Device registered, registration ID=" + regId;
+
+                    // You should send the registration ID to your server over HTTP,
+                    // so it can use GCM/HTTP or CCS to send messages to your app.
+                    // The request to your server should be authenticated if your app
+                    // is using accounts.
+                    //sendRegistrationIdToBackend();
+                    // For this demo: we don't need to send it because the device
+                    // will send upstream messages to a server that echo back the
+                    // message using the 'from' address in the message.
+
+                    // Persist the registration ID - no need to register again.
                     storeGCMRegistrationId(applicationContext, regId);
-                } catch (IOException e) {
-                    msg = "Error: " + e.getMessage();
+                } catch (IOException ex) {
+                    msg = "Error :" + ex.getMessage();
+                    // TODO: If there is an error, don't just keep trying to register.
+                    // Require the user to click a button again, or perform
+                    // exponential back-off.
                 }
                 return null;
             }
@@ -134,20 +155,23 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
     }
 
     private String getRegistrationId(Context applicationContext) {
-        SharedPreferences sharedPreferences = getGCMPreferences();
-        String regId = sharedPreferences.getString(PROPERTY_REG_ID, "");
-        if (regId.isEmpty()) {
+        final SharedPreferences prefs = getGCMPreferences(applicationContext);
+        String registrationId = prefs.getString(PROPERTY_REG_ID, "");
+        if (registrationId.isEmpty()) {
             Log.i("main activity", "GCM Registration not found.");
             return "";
         }
 
-        int registeredVersion = sharedPreferences.getInt(PROPERTY_APP_VERSION, Integer.MIN_VALUE);
-        int currentVersion    = getAppVersion(applicationContext);
+        // Check if app was updated; if so, it must clear the registration ID
+        // since the existing registration ID is not guaranteed to work with
+        // the new app version.
+        int registeredVersion = prefs.getInt(PROPERTY_APP_VERSION, Integer.MIN_VALUE);
+        int currentVersion = getAppVersion(applicationContext);
         if (registeredVersion != currentVersion) {
-            Log.i("main activity", "app version changed.");
+            Log.i("main activity", "App version changed.");
             return "";
         }
-        return regId;
+        return registrationId;
     }
 
     private int getAppVersion(Context context) {
@@ -263,9 +287,11 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
         int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
         if (resultCode != ConnectionResult.SUCCESS) {
             if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
-                GooglePlayServicesUtil.getErrorDialog(resultCode,this,PLAY_SERVICES_RESOLUTION_REQUEST).show();
+                GooglePlayServicesUtil.getErrorDialog(resultCode, this,
+                        PLAY_SERVICES_RESOLUTION_REQUEST).show();
             } else {
-                Log.i("Main Activity", "This device is not supported");
+                Log.i("main activity", "This device is not supported.");
+                finish();
             }
             return false;
         }
