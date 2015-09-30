@@ -82,12 +82,12 @@
     <string name="a11y_high_temp">High: <xliff:g id="high">%1$s</xliff:g></string>
     <string name="a11y_low_temp">Low: <xliff:g id="low">%1$s</xliff:g></string>
 
-    <!-- base url for fetching weather data -->
     <string name="format_art_url" translatable="false">https://raw.githubusercontent.com/udacity/Sunshine-Version-2/sunshine_master/app/src/main/res/drawable-xxhdpi/art_<xliff:g id="description">%s</xliff:g>.png</string>
 
     <!-- icon pack url-->
     <string name="icon_pack_url" translatable="false">https://raw.githubusercontent.com/udacity/sunshine_icons/master/Archive/<xliff:g id="pack">%s</xliff:g>/art_<xliff:g id="description">%s</xliff:g>.png</string>
     <!--udacity/sunshine_icons/blob/master/Archive/Colored/3.png-->
+    <!--<string name="pref_art_pack_sunshine" translatable="false">https://raw.githubusercontent.com/udacity/Sunshine-Version-2/sunshine_master/app/src/main/res/drawable-xxhdpi/art_%s.png</string>-->
 
     <!-- add preference for icon packs-->
     <string name="icon_pack_key">Icon Packs</string>
