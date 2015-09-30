@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -57,6 +58,10 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
         ///////////////
 
         setContentView(R.layout.activity_main);
+        Toolbar toolbar = (android.support.v7.widget.Toolbar)findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setElevation(0f);
         Log.d("lifecycle", "activity onCreate");
 
 
@@ -77,7 +82,6 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
             }
         } else {
             mTwoPane = false;
-            getSupportActionBar().setElevation(0f);
         }
         SunshineSyncAdapter.initializeSyncAdapter(this);
 
