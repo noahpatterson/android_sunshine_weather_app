@@ -23,8 +23,9 @@
 
         <android.support.v7.widget.GridLayout
             android:id="@+id/detail_additional_pane"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_weight="1"
             app:columnCount="2"
             android:background="@color/detail_accent_pane_background"
             android:paddingEnd="@dimen/abc_list_item_padding_horizontal_material"
