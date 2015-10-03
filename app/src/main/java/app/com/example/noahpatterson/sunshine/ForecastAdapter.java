@@ -22,6 +22,8 @@ public class ForecastAdapter extends CursorAdapter {
         super(context, c, flags);
     }
 
+    private boolean mTwoPane;
+
      private class ViewHolder {
 
          public TextView date;
@@ -70,11 +72,16 @@ public class ForecastAdapter extends CursorAdapter {
 //        if (cursor.isFirst()) {
 //            return LayoutInflater.from(context).inflate(R.layout.list_item_forecast_today, parent, false);
 //        } else {
-        int viewType = getItemViewType(cursor.getPosition());
-        HashMap<Integer, Integer> viewMap = new HashMap<>(2);
-        viewMap.put(0,R.layout.list_item_forecast);
-        viewMap.put(1, R.layout.list_item_forecast_today);
-        View view = LayoutInflater.from(context).inflate(viewMap.get(viewType), parent, false);
+        View view;
+        if (((MainActivity) context).findViewById(R.id.weather_detail_container) == null) {
+            int viewType = getItemViewType(cursor.getPosition());
+            HashMap<Integer, Integer> viewMap = new HashMap<>(2);
+            viewMap.put(0, R.layout.list_item_forecast);
+            viewMap.put(1, R.layout.list_item_forecast_today);
+            view = LayoutInflater.from(context).inflate(viewMap.get(viewType), parent, false);
+        } else {
+            view = LayoutInflater.from(context).inflate(R.layout.list_item_forecast, parent, false);
+        }
         ViewHolder viewHolder = new ViewHolder(view);
         view.setTag(viewHolder);
         return view;

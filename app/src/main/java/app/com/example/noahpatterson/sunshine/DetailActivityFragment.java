@@ -151,7 +151,7 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
             mUri = args.getParcelable("dateUri");
         }
 
-        View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_detail_start, container, false);
         mtextDate = (TextView) rootView.findViewById(R.id.detail_date_textview);
         mtextHigh = (TextView) rootView.findViewById(R.id.detail_high_textview);
         mtextLow = (TextView) rootView.findViewById(R.id.detail_low_textview);

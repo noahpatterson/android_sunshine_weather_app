@@ -9,6 +9,10 @@
     android:minHeight="?android:attr/listPreferredItemHeight"
     android:orientation="horizontal"
     android:weightSum="13"
+    android:paddingStart="@dimen/list_item_extra_padding"
+    android:paddingLeft="@dimen/list_item_extra_padding"
+    android:paddingRight="@dimen/list_item_extra_padding"
+    android:paddingEnd="@dimen/list_item_extra_padding"
     >
 
 
