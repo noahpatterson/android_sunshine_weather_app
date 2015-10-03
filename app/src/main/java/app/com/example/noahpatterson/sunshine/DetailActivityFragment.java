@@ -152,14 +152,14 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
         }
 
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
-        mtextDate = (TextView) rootView.findViewById(R.id.detail_date);
-        mtextHigh = (TextView) rootView.findViewById(R.id.detail_high);
-        mtextLow = (TextView) rootView.findViewById(R.id.detail_low);
-        mtextHumidity = (TextView) rootView.findViewById(R.id.detail_humidity);
-        mtextWind = (TextView) rootView.findViewById(R.id.detail_wind);
-        mtextPressure = (TextView) rootView.findViewById(R.id.detail_pressure);
-        mtextForecast = (TextView) rootView.findViewById(R.id.detail_forecast);
-        mConditionIcon = (ImageView) rootView.findViewById(R.id.detail_condition_icon);
+        mtextDate = (TextView) rootView.findViewById(R.id.detail_date_textview);
+        mtextHigh = (TextView) rootView.findViewById(R.id.detail_high_textview);
+        mtextLow = (TextView) rootView.findViewById(R.id.detail_low_textview);
+        mtextHumidity = (TextView) rootView.findViewById(R.id.detail_humidity_textview);
+        mtextWind = (TextView) rootView.findViewById(R.id.detail_wind_textview);
+        mtextPressure = (TextView) rootView.findViewById(R.id.detail_pressure_textview);
+        mtextForecast = (TextView) rootView.findViewById(R.id.detail_forecast_textview);
+        mConditionIcon = (ImageView) rootView.findViewById(R.id.detail_icon);
         return rootView;
     }
 
