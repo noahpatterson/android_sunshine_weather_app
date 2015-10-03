@@ -48,7 +48,7 @@
     <!-- We set elevation here only so the detail view doesn't get occluded
          by the AppBar -->
 
-    <FrameLayout
+    <android.support.v7.widget.CardView
         android:id="@+id/weather_detail_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -57,8 +57,9 @@
         android:layout_marginStart="@dimen/abc_list_item_padding_horizontal_material"
         android:layout_marginRight="@dimen/abc_list_item_padding_horizontal_material"
         android:layout_marginEnd="@dimen/abc_list_item_padding_horizontal_material"
-        android:elevation="@dimen/app_bar_elevation"
+        app:cardElevation="@dimen/detail_card_elevation"
         tools:layout="@layout/detail_today_grid"
+        app:cardPreventCornerOverlap="false"
 
         />
 
