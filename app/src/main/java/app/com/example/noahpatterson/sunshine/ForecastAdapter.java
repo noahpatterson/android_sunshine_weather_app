@@ -13,6 +13,8 @@ import com.bumptech.glide.Glide;
 
 import java.util.HashMap;
 
+import app.com.example.noahpatterson.sunshine.data.WeatherContract;
+
 /**
  * {@link ForecastAdapter} exposes a list of weather forecasts
  * from a {@link android.database.Cursor} to a {@link android.widget.ListView}.
@@ -23,13 +25,17 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
 //    }
     private Cursor mCursor;
     private Context mContext;
+    private ForecastAdapterOnClickHandler mClickHandler;
+    private View mEmptyView;
 
-    public ForecastAdapter(Context context) {
+    public ForecastAdapter(Context context, ForecastAdapterOnClickHandler clickHandler, View emptyView) {
         mContext = context;
+        mClickHandler = clickHandler;
+        mEmptyView = emptyView;
     }
 
 
-     public class ForecastAdapterViewHolder extends RecyclerView.ViewHolder
+     public class ForecastAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
 
     {
 
@@ -46,7 +52,21 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
              mHighTemp  = (TextView)view.findViewById(R.id.list_item_high_textview);
              mLowTemp   = (TextView)view.findViewById(R.id.list_item_low_textview);
              mConditionImage = (ImageView)view.findViewById(R.id.list_item_icon);
+             view.setOnClickListener(this);
          }
+
+
+        @Override
+        public void onClick(View v) {
+            int adapterPosition = getAdapterPosition();
+            mCursor.moveToPosition(adapterPosition);
+            int dateColumnIndex = mCursor.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_DATE);
+            mClickHandler.onClick(mCursor.getLong(dateColumnIndex), this);
+        }
+    }
+
+    public static interface ForecastAdapterOnClickHandler {
+        void onClick(Long date, ForecastAdapterViewHolder vh);
     }
 
     @Override
@@ -97,6 +117,7 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
     public void swapCursor(Cursor newCursor) {
         mCursor = newCursor;
         notifyDataSetChanged();
+        mEmptyView.setVisibility(getItemCount() == 0 ? View.VISIBLE : View.GONE);
     }
 
     public Cursor getCursor() { return mCursor; }
