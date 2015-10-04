@@ -12,11 +12,13 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.facebook.stetho.Stetho;
 import com.google.android.gms.common.ConnectionResult;
@@ -265,7 +267,7 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
     }
 
     @Override
-    public void onItemSelected(Uri dateUri) {
+    public void onItemSelected(Uri dateUri,  ForecastAdapter.ForecastAdapterViewHolder vh) {
         if (mTwoPane) {
             DetailActivityFragment detailActivityFragment = new DetailActivityFragment();
             Bundle args = new Bundle();
@@ -285,7 +287,8 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
 //            }
             Intent intent = new Intent(this, DetailActivity.class)
                     .setData(dateUri);
-            ActivityOptionsCompat activityOptionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(this);
+            ActivityOptionsCompat activityOptionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(this,
+                                               new Pair<View, String>(vh.mConditionImage, getString(R.string.detail_icon_transition_name)));
             ActivityCompat.startActivity(this, intent, activityOptionsCompat.toBundle());
 //            startActivity(intent);
         }

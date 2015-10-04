@@ -9,6 +9,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.ShareActionProvider;
 import android.view.LayoutInflater;
@@ -30,6 +31,7 @@ import app.com.example.noahpatterson.sunshine.data.WeatherContract;
  */
 public class DetailActivityFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
+    public static String DETAIL_TRANSITION_ANIMATION = "DTA";
     private String mForecastString;
     private ShareActionProvider mShareActionProvider;
     private TextView mtextDate;
@@ -41,6 +43,7 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
     private TextView mtextForecast;
     private ImageView mConditionIcon;
     private Uri mUri;
+    private boolean mTransitionAnimation;
 
     public DetailActivityFragment() {
         setHasOptionsMenu(true);
@@ -96,6 +99,11 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
         ViewParent vp = getView().getParent();
         if ( vp instanceof CardView ) {
             ((View)vp).setVisibility(View.VISIBLE);
+        }
+
+        if ( mTransitionAnimation ) {
+            AppCompatActivity activity = (AppCompatActivity)getActivity();
+            activity.supportStartPostponedEnterTransition();
         }
 
         String highFormatted = Utility.formatTemperature(getActivity(), data.getDouble(ForecastFragment.COL_WEATHER_MAX_TEMP), Utility.isMetric(getActivity()));
@@ -159,6 +167,7 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
         Bundle args = this.getArguments();
         if (args != null) {
             mUri = args.getParcelable("dateUri");
+            mTransitionAnimation = args.getBoolean(DetailActivityFragment.DETAIL_TRANSITION_ANIMATION, false);
         }
 
         View rootView = inflater.inflate(R.layout.fragment_detail_start, container, false);

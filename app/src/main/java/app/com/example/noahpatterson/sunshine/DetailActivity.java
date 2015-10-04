@@ -24,6 +24,7 @@ public class DetailActivity extends ActionBarActivity {
         if (savedInstanceState == null) {
             Bundle args = new Bundle();
             args.putParcelable("dateUri", getIntent().getData());
+            args.putBoolean(DetailActivityFragment.DETAIL_TRANSITION_ANIMATION, true);
             DetailActivityFragment df = new DetailActivityFragment();
             df.setArguments(args);
 
@@ -31,6 +32,8 @@ public class DetailActivity extends ActionBarActivity {
                     .add(R.id.weather_detail_container, df)
                     .commit();
         }
+
+        supportPostponeEnterTransition();
     }
 
 

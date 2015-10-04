@@ -2,6 +2,7 @@ package app.com.example.noahpatterson.sunshine;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -87,6 +88,8 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
 
     @Override
     public void onBindViewHolder(ForecastAdapterViewHolder viewHolder, int position) {
+        ViewCompat.setTransitionName(viewHolder.mConditionImage, "iconView" + position);
+
         mCursor.moveToPosition(position);
 
         viewHolder.mDate.setText(Utility.getFriendlyDayString(mContext, mCursor.getLong(ForecastFragment.COL_WEATHER_DATE)));
