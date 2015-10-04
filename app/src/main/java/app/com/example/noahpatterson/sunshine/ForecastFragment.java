@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -194,7 +195,11 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public void onDestroy() {
         super.onDestroy();
+
         Log.d("lifecycle", "fragment onDestroy");
+        if (fragmentRecyclerView != null) {
+            fragmentRecyclerView.clearOnScrollListeners();
+        }
     }
 
     @Override
@@ -292,7 +297,29 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
                 itemSelectedPosition = vh.getAdapterPosition();
             }
         }, empty_view);
+
+
+
         fragmentRecyclerView = forecast_recycler_view;
+
+        //allow for parallax on supported devices in landscape
+        final View parallaxView = fragmentView.findViewById(R.id.parallax_bar);
+        if (parallaxView != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                fragmentRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                    @Override
+                    public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                        super.onScrolled(recyclerView, dx, dy);
+                        int max = parallaxView.getHeight();
+                        if (dy > 0) {
+                            parallaxView.setTranslationY(Math.max(-max, parallaxView.getTranslationY() - dy / 2));
+                        } else {
+                            parallaxView.setTranslationY(Math.min(0, parallaxView.getTranslationY() - dy / 2));
+                        }
+                    }
+                });
+            }
+        }
         forecast_recycler_view.setLayoutManager(new LinearLayoutManager(getContext()));
         forecast_recycler_view.setAdapter(forecastAdapter);
 
