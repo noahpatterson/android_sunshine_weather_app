@@ -10,6 +10,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -17,7 +19,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -43,7 +44,8 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
     private ForecastAdapter forecastAdapter;
     private int itemSelectedPosition;
-    private ListView fragmentListView;
+//    private ListView fragmentListView;
+    private RecyclerView fragmentRecyclerView;
 
     // These indices are tied to FORECAST_COLUMNS.  If FORECAST_COLUMNS changes, these
     // must change.
@@ -118,17 +120,17 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
         // scroll to position if if exists
         if (itemSelectedPosition != ListView.INVALID_POSITION) {
-            fragmentListView.smoothScrollToPosition(itemSelectedPosition);
+            fragmentRecyclerView.smoothScrollToPosition(itemSelectedPosition);
         }
         updateEmptyView();
     }
 
     private void updateEmptyView() {
         // check for data
-        if (forecastAdapter.getCount() == 0) {
+        if (forecastAdapter.getItemCount() == 0) {
             int message = R.string.no_data;
-            View emptyView = fragmentListView.getEmptyView();
-            TextView emptyTextView = (TextView) emptyView.findViewById(R.id.empty_view);
+//            View emptyView = fragmentRecyclerView.getEmptyView();
+            TextView emptyTextView = (TextView) getView().findViewById(R.id.empty_view);
             @SunshineSyncAdapter.LocationStatus int location_sync_status = Utility.getLocationSyncStatus(getActivity());
             switch (location_sync_status) {
                 case SunshineSyncAdapter.LOCATION_STATUS_SERVER_DOWN:
@@ -197,7 +199,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        if (itemSelectedPosition != ListView.INVALID_POSITION) {
+        if (itemSelectedPosition != RecyclerView.NO_POSITION) {
             outState.putInt("itemSelectedPosition", itemSelectedPosition);
         }
         super.onSaveInstanceState(outState);
@@ -270,40 +272,43 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         }
 
         // ------ make a new ForecastAdapter -------------------
-        forecastAdapter = new ForecastAdapter(getActivity(), null, 0);
+        forecastAdapter = new ForecastAdapter(getContext());
 
         //R.layout refers to the actual xml file. R.id refers to the id of an element
 
         // this finds the root view
         final View fragmentView = inflater.inflate(R.layout.fragment_main, container, false);
 
-        final ListView forecast_list_vew = (ListView) fragmentView.findViewById(R.id.listview_forecast);
-        View empty_view = fragmentView.findViewById(R.id.empty_view);
-        forecast_list_vew.setEmptyView(empty_view);
-        fragmentListView = forecast_list_vew;
-        forecast_list_vew.setAdapter(forecastAdapter);
+//        final ListView forecast_list_vew = (ListView) fragmentView.findViewById(R.id.listview_forecast);
+//        View empty_view = fragmentView.findViewById(R.id.empty_view);
+//        forecast_list_vew.setEmptyView(empty_view);
+//        fragmentListView = forecast_list_vew;
+        final RecyclerView forecast_recycler_view = (RecyclerView) fragmentView.findViewById(R.id.recyclerView_forecast);
+        fragmentRecyclerView = forecast_recycler_view;
+        forecast_recycler_view.setLayoutManager(new LinearLayoutManager(getContext()));
+        forecast_recycler_view.setAdapter(forecastAdapter);
 
         // ------ cursor adapter doesn't because getItem from a CursorAdapter doesn't return a string--------
-        forecast_list_vew.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // save item selected position
-
-                itemSelectedPosition = position;
-
-                Cursor cursor = (Cursor) parent.getItemAtPosition(position);
-                String locationSetting = Utility.getPreferredLocation(getActivity());
-                if (cursor != null) {
-                    Uri dateUri = WeatherContract.WeatherEntry.buildWeatherLocationWithDate(locationSetting, cursor.getLong(COL_WEATHER_DATE));
-//                    String locationSetting = cursor.getString(COL_LOCATION_SETTING);
-//                    Intent intent = new Intent(getActivity(), DetailActivity.class)
-//                            .setData(WeatherContract.WeatherEntry.buildWeatherLocationWithDate(locationSetting, cursor.getLong(COL_WEATHER_DATE)));
-//                    startActivity(intent);
-                    ((Callback) getActivity())
-                            .onItemSelected(dateUri);
-                }
-            }
-        });
+//        forecast_recycler_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                // save item selected position
+//
+//                itemSelectedPosition = position;
+//
+//                Cursor cursor = (Cursor) parent.getItemAtPosition(position);
+//                String locationSetting = Utility.getPreferredLocation(getActivity());
+//                if (cursor != null) {
+//                    Uri dateUri = WeatherContract.WeatherEntry.buildWeatherLocationWithDate(locationSetting, cursor.getLong(COL_WEATHER_DATE));
+////                    String locationSetting = cursor.getString(COL_LOCATION_SETTING);
+////                    Intent intent = new Intent(getActivity(), DetailActivity.class)
+////                            .setData(WeatherContract.WeatherEntry.buildWeatherLocationWithDate(locationSetting, cursor.getLong(COL_WEATHER_DATE)));
+////                    startActivity(intent);
+//                    ((Callback) getActivity())
+//                            .onItemSelected(dateUri);
+//                }
+//            }
+//        });
         return fragmentView;
     }
 
