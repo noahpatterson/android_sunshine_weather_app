@@ -83,6 +83,9 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
     public static final int LOCATION_STATUS_UNKNOWN = 3;
     public static final int LOCATION_STATUS_INVALID = 4;
 
+    //handle widget updates
+    public static final String ACTION_DATA_UPDATED = "app.com.example.noahpatterson.sunshine.ACTION_DATA_UPDATED";
+
     public SunshineSyncAdapter(Context context, boolean autoInitialize) {
         super(context, autoInitialize);
     }
@@ -277,6 +280,11 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
          * Finally, let's do a sync to get things started
          */
         syncImmediately(context);
+    }
+
+    private void updateWidget() {
+        Intent dataUpdatedIntent = new Intent(ACTION_DATA_UPDATED);
+        getContext().sendBroadcast(dataUpdatedIntent);
     }
 
     private void notifyWeather() {
@@ -577,6 +585,10 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
 
                     //notification
                     notifyWeather();
+
+                    //update widget
+                    updateWidget();
+
                     setLocationStatus(LOCATION_STATUS_OK);
 
                     Log.d(LOG_TAG, "FetchWeatherTask Complete. " + inserted + " Inserted: " + cVVector.toString());
