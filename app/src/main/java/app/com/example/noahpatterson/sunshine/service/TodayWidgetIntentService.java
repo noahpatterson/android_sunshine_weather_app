@@ -76,7 +76,7 @@ public class TodayWidgetIntentService extends IntentService {
 
         // Perform this loop procedure for each Today widget
         for (int appWidgetId : appWidgetIds) {
-            int layoutId = R.layout.widget_today_small;
+            int layoutId = selectWidgetLayout(appWidgetId);
             RemoteViews views = new RemoteViews(getPackageName(), layoutId);
 
             // Add the data to the RemoteViews
@@ -86,6 +86,9 @@ public class TodayWidgetIntentService extends IntentService {
                 setRemoteContentDescription(views, description);
             }
             views.setTextViewText(R.id.widget_high_temperature, formattedMaxTemperature);
+            views.setTextViewText(R.id.widget_low_temperature, formattedMinTemperature);
+            views.setTextViewText(R.id.widget_condition, description);
+
 
             // Create an Intent to launch MainActivity
             Intent launchIntent = new Intent(this, MainActivity.class);
@@ -110,8 +113,11 @@ public class TodayWidgetIntentService extends IntentService {
     private int selectWidgetLayout(int appWidgetId) {
         int widgetMinWidth = getWidgetMinWidth(appWidgetId);
         if (widgetMinWidth < 110) {
-            return 0;
+            return R.layout.widget_today_small;
+        } else if (widgetMinWidth >= 110 && widgetMinWidth < 220) {
+            return R.layout.widget_today;
+        } else {
+            return R.layout.widget_today_large;
         }
-        return 0;
     }
 }
