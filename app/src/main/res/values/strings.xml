@@ -109,4 +109,7 @@
     <!-- for shared element transitions-->
     <string name="detail_icon_transition_name" traslatable="false">TN_DetailIcon</string>
     <string name="title_widget_today">Sunshine Today</string>
+
+    <!-- api key-->
+    <string name="api_key">2f1fe57f4a17424622b5b2ee961e8be9</string>
 </resources>
