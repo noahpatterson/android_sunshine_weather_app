@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
     private static final String PROPERTY_APP_VERSION = "appVersion";
     private GoogleCloudMessaging mGcm;
 
+
     // id from GCM web console
     public static final String PROJECT_NUMBER = "193030073480";
 
@@ -67,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setElevation(0f);
         Log.d("lifecycle", "activity onCreate");
+        Uri contentUri = getIntent() != null ? getIntent().getData() : null;
 
 
         SharedPreferences shardPrefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -80,9 +82,15 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
             // adding or replacing the detail fragment using a
             // fragment transaction.
             if (savedInstanceState == null) {
+                DetailActivityFragment fragment = new DetailActivityFragment();
+                if (contentUri != null) {
+                    Bundle args = new Bundle();
+                    args.putParcelable("dateUri", contentUri);
+                    fragment.setArguments(args);
+                }
                 getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.weather_detail_container, new DetailActivityFragment(), DETAILFRAGMENT_TAG)
-                        .commit();
+                        .replace(R.id.weather_detail_container, fragment, DETAILFRAGMENT_TAG)
+                .commit();
             }
         } else {
             mTwoPane = false;

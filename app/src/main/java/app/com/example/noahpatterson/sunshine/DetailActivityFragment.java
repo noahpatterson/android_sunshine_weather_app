@@ -32,6 +32,7 @@ import app.com.example.noahpatterson.sunshine.data.WeatherContract;
 public class DetailActivityFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     public static String DETAIL_TRANSITION_ANIMATION = "DTA";
+    public static final String DETAIL_URI = "URI";
     private String mForecastString;
     private ShareActionProvider mShareActionProvider;
     private TextView mtextDate;
